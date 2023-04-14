@@ -1,0 +1,20 @@
+---
+title: "Title TBD"
+author: "Carol Milton"
+format: html
+editor: visual
+execute: 
+  echo: false
+jupyter: python3
+editor_options: 
+  chunk_output_type: console
+---
+
+```{python}
+import pandas as pd
+```
+
+```{python}
+f_df = pd.read_csv("../Data/factors.csv")
+s_df = pd.read_csv("../Data/severity.csv")
+```

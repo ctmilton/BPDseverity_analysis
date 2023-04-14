@@ -1,0 +1,114 @@
+---
+title: "Data Cleaning"
+author: "Carol Milton"
+format: html
+editor: visual
+jupyter: python3
+---
+
+```{python}
+import pandas as pd
+# pyreadr is for importing a .RData file
+import pyreadr
+import numpy as np
+```
+
+## Importing Datasets
+
+```{python}
+# importing files
+factors_df = pd.read_csv("./Homan_et_al_2017/data/fae-bpd.csv")
+# importing .RData file into Ordered Dict
+result_df = pyreadr.read_r("./vonKlipstein_et_al_2021/vonKlipstein2021.RData")
+```
+
+```{python}
+# creating df from Ordered Dict
+print(result_df.keys())
+severity_df = result_df["shareD"]
+```
+
+factors_df contains the data about BPD status (have it or not), depression, paranoia, state anxiety, trait anxiety.
+
+severity_df contains the data about BPD severity and subscale symptoms.
+
+# Focusing on factors_df
+
+## Looking at the Data
+
+```{python}
+# looking at n columns
+pd.set_option('display.max_columns', 5)
+factors_df.head()
+```
+
+```{python}
+# creating dataset with only necessary columns
+f_df = factors_df.filter(['id','run','trial','groupn','group','age','gendern','gender','matchid','paranoia','bdi','stais','stait'], axis=1)
+```
+
+```{python}
+# creating list of the column names
+fcolumns = list(f_df.columns)
+fcolumns
+```
+
+```{python}
+# examining missing values
+print("Missing values distribution: ")
+print(f_df.isnull().mean())
+print("")
+```
+
+There is high percentage of missing values for `stais` and `stait` at around 32%. The columns `paranoia` and `bdi` don't have as many missing values. The other variables don't have any missing values which is great.
+
+```{python}
+# checking each column's datatype
+print("Column datatypes: ")
+print(f_df.dtypes)
+```
+
+```{python}
+# listing all the columns with string/mixed type values
+str_cols = ['group', 'gender']
+
+# removing leading and trailing characters from columns with str type
+for i in str_cols:
+    f_df[i] = f_df[i].str.strip()
+```
+
+## Dealing with Missing Values
+
+```{python}
+# Checking smallest values in columns with NaNs
+print("Smallest paranoia value:", np.nanmin(f_df.iloc[:, 9].values))
+print("Smallest depression value:", np.nanmin(f_df.iloc[:, 10].values))
+print("Smallest state anxiety value:", np.nanmin(f_df.iloc[:, 11].values))
+print("Smallest trait anxiety value:", np.nanmin(f_df.iloc[:, 12].values))
+```
+
+```{python}
+# checking the id, group, and gender of rows with NaNs in paranoia column
+select_indicesP = list(np.where(f_df.loc[:,"paranoia"].isnull()))[0]
+f_df.loc[select_indicesP,["id","group","gender"]].drop_duplicates()
+```
+
+```{python}
+# checking the id, group, and gender of rows with NaNs in bdi column
+select_indicesB = list(np.where(f_df.loc[:,"bdi"].isnull()))[0]
+f_df.loc[select_indicesB,["id","group","gender"]].drop_duplicates()
+```
+
+```{python}
+# checking the id, group, and gender of rows with NaNs in stais column
+select_indicesS = list(np.where(f_df.loc[:,"stais"].isnull()))[0]
+f_df.loc[select_indicesS,["id","group","gender"]].drop_duplicates()
+```
+
+```{python}
+# checking the id, group, and gender of rows with NaNs in stait column
+select_indicesT = list(np.where(f_df.loc[:,"stait"].isnull()))[0]
+f_df.loc[select_indicesT,["id","group","gender"]].drop_duplicates()
+```
+
+# Focusing on severity_df
