@@ -11,15 +11,16 @@ import pandas as pd
 # pyreadr is for importing a .RData file
 import pyreadr
 import numpy as np
+import matplotlib.pyplot as plt
 ```
 
 ## Importing Datasets
 
 ```{python}
 # importing files
-factors_df = pd.read_csv("./Homan_et_al_2017/data/fae-bpd.csv")
+factors_df = pd.read_csv("../Homan_et_al_2017/fae-bpd.csv")
 # importing .RData file into Ordered Dict
-result_df = pyreadr.read_r("./vonKlipstein_et_al_2021/vonKlipstein2021.RData")
+result_df = pyreadr.read_r("../vonKlipstein_et_al_2021/vonKlipstein2021.RData")
 ```
 
 ```{python}
@@ -28,9 +29,9 @@ print(result_df.keys())
 severity_df = result_df["shareD"]
 ```
 
-factors_df contains the data about BPD status (have it or not), depression, paranoia, state anxiety, trait anxiety.
+`factors_df` contains the data about BPD status (have it or not), depression, paranoia, state anxiety, trait anxiety.
 
-severity_df contains the data about BPD severity and subscale symptoms.
+`severity_df` contains the data about BPD severity and subscale symptoms.
 
 # Focusing on factors_df
 
@@ -49,8 +50,8 @@ f_df = factors_df.filter(['id','run','trial','groupn','group','age','gendern','g
 
 ```{python}
 # creating list of the column names
-fcolumns = list(f_df.columns)
-fcolumns
+#fcolumns = list(f_df.columns)
+#fcolumns
 ```
 
 ```{python}
@@ -77,8 +78,6 @@ for i in str_cols:
     f_df[i] = f_df[i].str.strip()
 ```
 
-## Dealing with Missing Values
-
 ```{python}
 # Checking smallest values in columns with NaNs
 print("Smallest paranoia value:", np.nanmin(f_df.iloc[:, 9].values))
@@ -88,27 +87,341 @@ print("Smallest trait anxiety value:", np.nanmin(f_df.iloc[:, 12].values))
 ```
 
 ```{python}
+# Checking largest values in columns with NaNs
+print("Largest paranoia value:", np.nanmax(f_df.iloc[:, 9].values))
+print("Largest depression value:", np.nanmax(f_df.iloc[:, 10].values))
+print("Largest state anxiety value:", np.nanmax(f_df.iloc[:, 11].values))
+print("Largest trait anxiety value:", np.nanmax(f_df.iloc[:, 12].values))
+```
+
+
+## Dealing with Missing Values
+```{python}
 # checking the id, group, and gender of rows with NaNs in paranoia column
 select_indicesP = list(np.where(f_df.loc[:,"paranoia"].isnull()))[0]
-f_df.loc[select_indicesP,["id","group","gender"]].drop_duplicates()
+p = f_df.loc[select_indicesP,["id","group","gender"]].drop_duplicates()
+p
 ```
 
 ```{python}
 # checking the id, group, and gender of rows with NaNs in bdi column
 select_indicesB = list(np.where(f_df.loc[:,"bdi"].isnull()))[0]
-f_df.loc[select_indicesB,["id","group","gender"]].drop_duplicates()
+b = f_df.loc[select_indicesB,["id","group","gender"]].drop_duplicates()
+b
 ```
 
 ```{python}
 # checking the id, group, and gender of rows with NaNs in stais column
 select_indicesS = list(np.where(f_df.loc[:,"stais"].isnull()))[0]
-f_df.loc[select_indicesS,["id","group","gender"]].drop_duplicates()
+s = f_df.loc[select_indicesS,["id","group","gender"]].drop_duplicates()
+s
 ```
 
 ```{python}
 # checking the id, group, and gender of rows with NaNs in stait column
 select_indicesT = list(np.where(f_df.loc[:,"stait"].isnull()))[0]
-f_df.loc[select_indicesT,["id","group","gender"]].drop_duplicates()
+t = f_df.loc[select_indicesT,["id","group","gender"]].drop_duplicates()
+t
 ```
 
+```{python}
+# checking for common ids in paranoia and bdi columns
+common_pb = p.merge(b, on="id")
+common_pb
+```
+
+```{python}
+# checking if all ids in stais and stait are the same
+print(s.equals(t))
+```
+
+```{python}
+# checking for common ids in bdi and stais columns
+common_bs = b.merge(s, on="id")
+common_bs
+```
+
+```{python}
+# checking for all common ids among paranoia, bdi, stais, and stait
+common = common_pb.merge(s, on="id")
+common
+```
+
+Now, we know the IDs for rows with NaNs in all four variables of interest. All the IDs with NaNs in the `bdi` column are also the same in the `stais` and `stait` columns.
+
+
+```{python}
+# Creating a list of the row indices with NaNs
+temp = select_indicesP.tolist() + select_indicesB.tolist()
+# don't need to add select_indicesT since it equals select_indicesS
+NAindices = temp + select_indicesS.tolist()
+
+# getting rid of duplicates
+NAindices = [*set(NAindices)]
+```
+
+
+```{python}
+# creating dataset after removing NaNs in paranoia column
+fp_df = f_df.drop(
+  labels=select_indicesP,
+  axis=0,
+  inplace=False
+)
+```
+
+```{python}
+# examining missing values
+print("Missing values distribution: ")
+print(fp_df.isnull().mean())
+print("")
+```
+
+```{python}
+# creating dataset after removing NaNs in bdi column
+fb_df = f_df.drop(
+  labels=select_indicesB,
+  axis=0,
+  inplace=False
+)
+```
+
+```{python}
+# examining missing values
+print("Missing values distribution: ")
+print(fb_df.isnull().mean())
+print("")
+```
+
+```{python}
+# creating dataset after removing NaNs in stais and stait columns
+fst_df = f_df.drop(
+  labels=select_indicesS,
+  axis=0,
+  inplace=False
+)
+```
+
+```{python}
+# examining missing values
+print("Missing values distribution: ")
+print(fst_df.isnull().mean())
+print("")
+```
+
+```{python}
+# creating dataset after removing NaNs in all columns
+f_cleandf = f_df.drop(
+  labels=NAindices,
+  axis=0,
+  inplace=False
+)
+```
+
+```{python}
+# examining missing values
+print("Missing values distribution: ")
+print(f_cleandf.isnull().mean())
+print("")
+```
+
+
+## Exporting Datsets
+```{python}
+fp_df.to_csv("../Data/FactorsData/paranoia_noNaNs", index=False, header=True)
+fb_df.to_csv("../Data/FactorsData/bdi_noNaNs", index=False, header=True)
+fst_df.to_csv("../Data/FactorsData/anxiety_noNaNs", index=False, header=True)
+f_cleandf.to_csv("../Data/FactorsData/factors_noNaNs", index=False, header=True)
+```
+
+
 # Focusing on severity_df
+
+## Looking at the Data
+
+```{python}
+# looking at n columns
+pd.set_option('display.max_columns', 5)
+severity_df.head()
+```
+
+```{python}
+severity_df[['ID']]
+```
+
+```{python}
+# creating dataset with only necessary columns
+s_df = severity_df.filter(['ID','study','BPDSIsum','BPDSI1av','BPDSI2av','BPDSI3av','BPDSI4av','BPDSI5av','BPDSI6av','BPDSI7av','BPDSI8av','BPDSI9av'], axis=1)
+```
+
+```{python}
+# creating list of the column names
+#scolumns = list(s_df.columns)
+#scolumns
+```
+
+```{python}
+len(s_df.index)
+```
+
+```{python}
+# examining missing values
+print("Missing values distribution: ")
+print(s_df.isnull().mean())
+print("")
+```
+
+The `ID` and `study` columns have no missing values. The percentage of missing values for all other variables of interest is about the same.
+
+## Dealing with Missing Values
+```{python}
+# creating new cleaned dataset without missing values
+s_temp = s_df.dropna(axis=0)
+```
+
+```{python}
+# examining missing values
+print("Missing values distribution: ")
+print(s_temp.isnull().mean())
+print("")
+```
+
+```{python}
+len(s_temp.index)
+```
+
+
+## Checking Data Types
+```{python}
+# checking each column's datatype
+print("Column datatypes: ")
+print(s_temp.dtypes)
+```
+
+```{python}
+#| warning: False
+s_temp['ID'] = s_temp['ID'].astype(int)
+```
+
+```{python}
+# checking each column's datatype
+print("Column datatypes: ")
+print(s_temp.dtypes)
+```
+
+
+## Renaming Columns
+```{python}
+s_temp = s_temp.rename(
+  columns={
+    'BPDSI1av':'abandonment',
+    'BPDSI2av':'interpersonal_relationships',
+    'BPDSI3av':'identity',
+    'BPDSI4av':'impulsivity',
+    'BPDSI5av':'parasuicidal_behavior',
+    'BPDSI6av':'affective_instability',
+    'BPDSI7av':'emptiness',
+    'BPDSI8av':'outbursts_of_anger',
+    'BPDSI9av':'dissociation_and_paranoid_ideation'
+    }
+  ,inplace=False
+  )
+```
+
+```{python}
+# creating list of the column names
+scolumns = list(s_temp.columns)
+scolumns
+```
+
+## Checking Min/Max Values
+
+### Checking Min Values
+```{python}
+# Checking the min values
+print("Smallest BPDSIsum value:", np.nanmin(s_temp.iloc[:, 2].values))
+print("Smallest abandonment value:", np.nanmin(s_temp.iloc[:, 3].values))
+print("Smallest interpersonal_relationships value:", np.nanmin(s_temp.iloc[:, 4].values))
+print("Smallest identity value:", np.nanmin(s_temp.iloc[:, 5].values))
+print("Smallest impulsivity value:", np.nanmin(s_temp.iloc[:, 6].values))
+print("Smallest parasuicidal_behavior value:", np.nanmin(s_temp.iloc[:, 7].values))
+print("Smallest affective_instability value:", np.nanmin(s_temp.iloc[:, 8].values))
+print("Smallest emptiness value:", np.nanmin(s_temp.iloc[:, 9].values))
+print("Smallest outbursts_of_anger value:", np.nanmin(s_temp.iloc[:, 10].values))
+print("Smallest dissociation_and_paranoid_ideation value:", np.nanmin(s_temp.iloc[:, 11].values))
+```
+This shows something to watch out for when doing analysis. All of the participants of the studies have BPD, so it doesn't make much sense to have no symptoms or BPD in general. Thus, there may be outliers in the data that can be taken out.
+
+```{python}
+# checking for rows where BPDSIsum = 0
+#below_threshold = s_temp.loc[s_temp['BPDSIsum']==0]
+
+#s_cleandf = s_temp.loc[~s_temp['BPDSIsum'].isin(range(16))]
+
+# making sure those values are gone
+#check = s_cleandf.loc[s_cleandf['BPDSIsum'].isin(range(16))]
+#len(check.index)
+
+# Checking the min values
+'''
+print("Smallest BPDSIsum value:", np.nanmin(s_cleandf.iloc[:, 2].values))
+print("Smallest abandonment value:", np.nanmin(s_cleandf.iloc[:, 3].values))
+print("Smallest interpersonal_relationships value:", np.nanmin(s_cleandf.iloc[:, 4].values))
+print("Smallest identity value:", np.nanmin(s_cleandf.iloc[:, 5].values))
+print("Smallest impulsivity value:", np.nanmin(s_cleandf.iloc[:, 6].values))
+print("Smallest parasuicidal_behavior value:", np.nanmin(s_cleandf.iloc[:, 7].values))
+print("Smallest affective_instability value:", np.nanmin(s_cleandf.iloc[:, 8].values))
+print("Smallest emptiness value:", np.nanmin(s_cleandf.iloc[:, 9].values))
+print("Smallest outbursts_of_anger value:", np.nanmin(s_cleandf.iloc[:, 10].values))
+print("Smallest dissociation_and_paranoid_ideation value:", np.nanmin(s_cleandf.iloc[:, 11].values))
+'''
+```
+
+### Checking Max Values
+```{python}
+# Checking the max values
+print("Largest BPDSIsum value:", np.nanmax(s_temp.iloc[:, 2].values))
+print("Largest abandonment value:", np.nanmax(s_temp.iloc[:, 3].values))
+print("Largest interpersonal_relationships value:", np.nanmax(s_temp.iloc[:, 4].values))
+print("Largest identity value:", np.nanmax(s_temp.iloc[:, 5].values))
+print("Largest impulsivity value:", np.nanmax(s_temp.iloc[:, 6].values))
+print("Largest parasuicidal_behavior value:", np.nanmax(s_temp.iloc[:, 7].values))
+print("Largest affective_instability value:", np.nanmax(s_temp.iloc[:, 8].values))
+print("Largest emptiness value:", np.nanmax(s_temp.iloc[:, 9].values))
+print("Largest outbursts_of_anger value:", np.nanmax(s_temp.iloc[:, 10].values))
+print("Largest dissociation_and_paranoid_ideation value:", np.nanmax(s_temp.iloc[:, 11].values))
+```
+
+The `identity` column needs to be checked. According to the `codebook`, the range of values in `identity` should be from 0 to 4. The other column max values seem okay.
+
+```{python}
+# checking the unusual values in identity column
+check = s_temp.loc[s_temp['identity']>4]
+
+# check = severity_df.loc[severity_df['BPDSI3.1']>4]
+# check = severity_df.loc[severity_df['BPDSI3.2']>4]
+# check = severity_df.loc[severity_df['BPDSI3.3']>4]
+# check = severity_df.loc[severity_df['BPDSI3.4']>4]
+# check = severity_df.loc[severity_df['BPDSI3.5']>4]
+# check = severity_df.loc[severity_df['BPDSI3.6']>4]
+# check = severity_df.loc[severity_df['BPDSI3.7']>4]
+# check = severity_df.loc[severity_df['BPDSI3.8']>4]
+
+len(check.index)
+```
+```{python}
+plt.hist(s_temp['identity'], bins=5)
+#plt.hist(severity_df['BPDSI3.1'], bins=5)
+#plt.hist(severity_df['BPDSI3.6'], bins=5)
+#plt.hist(severity_df['BPDSI3.3'], bins=5)
+
+plt.show()
+```
+
+After looking at the data and distribution, it seems that the `codebook` may have been incorrect. The scale for `identity` appears to be from 0 to 10 just like the other subscale groups. Checked in the original research paper (von Klipstein et al., 2021) and the authors note that all of the subscale groups have a scale from 0 to 10.
+
+## Exporting Datset
+```{python}
+s_temp.to_csv("../Data/SeverityData/severity_noNaNs", index=False, header=True)
+```
+
