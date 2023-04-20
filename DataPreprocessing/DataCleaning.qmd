@@ -61,6 +61,12 @@ print(f_df.isnull().mean())
 print("")
 ```
 
+```{python}
+# checking to see the count after all NaNs are taken out
+new_f = f_df.dropna()
+print(new_f)
+```
+
 There is high percentage of missing values for `stais` and `stait` at around 32%. The columns `paranoia` and `bdi` don't have as many missing values. The other variables don't have any missing values which is great.
 
 ```{python}

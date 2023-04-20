@@ -10,7 +10,7 @@ jupyter: python3
 import math
 import numpy as np
 import pandas as pd
-#from scipy.stats import lognorm
+from scipy import stats
 #import matplotlib.pyplot as plt
 import seaborn as sns
 ```
@@ -38,3 +38,18 @@ sns.histplot(data=df, x="stais")
 
 None of the histograms show a normal distribution so we will be using non-Parametric tests.
 
+```{python}
+sns.scatterplot(data=df, x=df['paranoia'], y=df['bdi'])
+```
+
+
+# Correlation Tests
+
+must split data points according to run #.
+
+```{python}
+p_b = stats.spearmanr(df['paranoia'].tolist(), df['bdi'].tolist())
+p_b
+```
+
+Strong correlation between paranoia and depression.
