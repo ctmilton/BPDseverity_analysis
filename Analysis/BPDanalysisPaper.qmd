@@ -15,6 +15,6 @@ import pandas as pd
 ```
 
 ```{python}
-f_df = pd.read_csv("../Data/factors.csv")
-s_df = pd.read_csv("../Data/severity.csv")
+f_df = pd.read_csv("../Data/FactorsData/factors.csv")
+s_df = pd.read_csv("../Data/SeverityData/severity.csv")
 ```

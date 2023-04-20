@@ -350,7 +350,7 @@ print("Smallest emptiness value:", np.nanmin(s_temp.iloc[:, 9].values))
 print("Smallest outbursts_of_anger value:", np.nanmin(s_temp.iloc[:, 10].values))
 print("Smallest dissociation_and_paranoid_ideation value:", np.nanmin(s_temp.iloc[:, 11].values))
 ```
-This shows something to watch out for when doing analysis. All of the participants of the studies have BPD, so it doesn't make much sense to have no symptoms or BPD in general. Thus, there may be outliers in the data that can be taken out.
+This shows something to watch out for when doing analysis. All of the participants of the studies have BPD, so it doesn't make much sense to have no symptoms or BPD in general. Thus, there may be outliers in the data that can be taken out. This can also be because the participants had lower BPD severity to the point where they can no longer be categorized with BPD (maybe after treatment).
 
 ```{python}
 # checking for rows where BPDSIsum = 0
@@ -363,18 +363,16 @@ This shows something to watch out for when doing analysis. All of the participan
 #len(check.index)
 
 # Checking the min values
-'''
-print("Smallest BPDSIsum value:", np.nanmin(s_cleandf.iloc[:, 2].values))
-print("Smallest abandonment value:", np.nanmin(s_cleandf.iloc[:, 3].values))
-print("Smallest interpersonal_relationships value:", np.nanmin(s_cleandf.iloc[:, 4].values))
-print("Smallest identity value:", np.nanmin(s_cleandf.iloc[:, 5].values))
-print("Smallest impulsivity value:", np.nanmin(s_cleandf.iloc[:, 6].values))
-print("Smallest parasuicidal_behavior value:", np.nanmin(s_cleandf.iloc[:, 7].values))
-print("Smallest affective_instability value:", np.nanmin(s_cleandf.iloc[:, 8].values))
-print("Smallest emptiness value:", np.nanmin(s_cleandf.iloc[:, 9].values))
-print("Smallest outbursts_of_anger value:", np.nanmin(s_cleandf.iloc[:, 10].values))
-print("Smallest dissociation_and_paranoid_ideation value:", np.nanmin(s_cleandf.iloc[:, 11].values))
-'''
+# print("Smallest BPDSIsum value:", np.nanmin(s_cleandf.iloc[:, 2].values))
+# print("Smallest abandonment value:", np.nanmin(s_cleandf.iloc[:, 3].values))
+# print("Smallest interpersonal_relationships value:", np.nanmin(s_cleandf.iloc[:, 4].values))
+# print("Smallest identity value:", np.nanmin(s_cleandf.iloc[:, 5].values))
+# print("Smallest impulsivity value:", np.nanmin(s_cleandf.iloc[:, 6].values))
+# print("Smallest parasuicidal_behavior value:", np.nanmin(s_cleandf.iloc[:, 7].values))
+# print("Smallest affective_instability value:", np.nanmin(s_cleandf.iloc[:, 8].values))
+# print("Smallest emptiness value:", np.nanmin(s_cleandf.iloc[:, 9].values))
+# print("Smallest outbursts_of_anger value:", np.nanmin(s_cleandf.iloc[:, 10].values))
+# print("Smallest dissociation_and_paranoid_ideation value:", np.nanmin(s_cleandf.iloc[:, 11].values))
 ```
 
 ### Checking Max Values

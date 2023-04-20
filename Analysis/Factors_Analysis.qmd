@@ -1,0 +1,40 @@
+---
+title: "Analysis of Factors Data"
+author: "Carol Milton"
+format: html
+editor: visual
+jupyter: python3
+---
+
+```{python}
+import math
+import numpy as np
+import pandas as pd
+#from scipy.stats import lognorm
+#import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+```{python}
+df = pd.read_csv(r"../Data/FactorsData/factors_noNaNs")
+```
+
+# Checking for Normality
+```{python}
+sns.histplot(data=df, x="paranoia")
+```
+
+```{python}
+sns.histplot(data=df, x="bdi")
+```
+
+```{python}
+sns.histplot(data=df, x="stait")
+```
+
+```{python}
+sns.histplot(data=df, x="stais")
+```
+
+None of the histograms show a normal distribution so we will be using non-Parametric tests.
+
