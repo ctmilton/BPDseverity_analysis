@@ -8,48 +8,52 @@ jupyter: python3
 
 ```{python}
 import math
+import statistics
 import numpy as np
 import pandas as pd
-from scipy import stats
+import scipy.stats
 #import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 ```
 
 ```{python}
-df = pd.read_csv(r"../Data/FactorsData/factors_noNaNs")
+df = pd.read_csv(r"../Data/FactorsData/factors.csv")
 ```
 
-# Checking for Normality
+# Descriptive Statistics
 ```{python}
-sns.histplot(data=df, x="paranoia")
+summary_paranoia = df.groupby("run", as_index=False)["paranoiaM"].agg(["count","min","max","mean","std"])
+print("Summary for paranoia\n",summary_paranoia)
+print()
+print()
+
+summary_bdi = df.groupby("run", as_index=False)["bdiM"].agg(["count","min","max","mean","std"])
+print("Summary for bdi\n",summary_bdi)
+print()
+print()
+
+summary_stais = df.groupby("run", as_index=False)["staisM"].agg(["count","min","max","mean","std"])
+print("Summary for stais\n",summary_stais)
+print()
+print()
+
+summary_stait = df.groupby("run", as_index=False)["staitM"].agg(["count","min","max","mean","std"])
+print("Summary for stais\n",summary_stait)
+print()
+print()
 ```
 
-```{python}
-sns.histplot(data=df, x="bdi")
-```
+It seems like the data is the same regardless of the runs.
 
-```{python}
-sns.histplot(data=df, x="stait")
-```
+# Condition Checking
 
-```{python}
-sns.histplot(data=df, x="stais")
-```
+## Constant Variance
 
-None of the histograms show a normal distribution so we will be using non-Parametric tests.
+## Linearity
 
-```{python}
-sns.scatterplot(data=df, x=df['paranoia'], y=df['bdi'])
-```
+## Normality??
+Normality is not a necessary condition for logistic regression, but we can still take a look.
 
 
-# Correlation Tests
 
-must split data points according to run #.
 
-```{python}
-p_b = stats.spearmanr(df['paranoia'].tolist(), df['bdi'].tolist())
-p_b
-```
-
-Strong correlation between paranoia and depression.
