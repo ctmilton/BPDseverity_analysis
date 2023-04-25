@@ -100,8 +100,8 @@ print("Largest state anxiety value:", np.nanmax(f_df.iloc[:, 11].values))
 print("Largest trait anxiety value:", np.nanmax(f_df.iloc[:, 12].values))
 ```
 
-
 ## Dealing with Missing Values
+
 ```{python}
 # checking the id, group, and gender of rows with NaNs in paranoia column
 select_indicesP = list(np.where(f_df.loc[:,"paranoia"].isnull()))[0]
@@ -155,7 +155,6 @@ common
 
 Now, we know the IDs for rows with NaNs in all four variables of interest. All the IDs with NaNs in the `bdi` column are also the same in the `stais` and `stait` columns.
 
-
 ```{python}
 # Creating a list of the row indices with NaNs
 temp = select_indicesP.tolist() + select_indicesB.tolist()
@@ -165,7 +164,6 @@ NAindices = temp + select_indicesS.tolist()
 # getting rid of duplicates
 NAindices = [*set(NAindices)]
 ```
-
 
 ```{python}
 # creating dataset after removing NaNs in paranoia column
@@ -231,15 +229,21 @@ print(f_cleandf.isnull().mean())
 print("")
 ```
 
+## Creating Dataset to Use for Analysis
 
-## Exporting Datsets
 ```{python}
-fp_df.to_csv("../Data/FactorsData/paranoia_noNaNs", index=False, header=True)
-fb_df.to_csv("../Data/FactorsData/bdi_noNaNs", index=False, header=True)
-fst_df.to_csv("../Data/FactorsData/anxiety_noNaNs", index=False, header=True)
-f_cleandf.to_csv("../Data/FactorsData/factors_noNaNs", index=False, header=True)
+factors_final_df = f_cleandf.groupby(["id","run"]).agg(id=('id','mean'),run=('run','mean'),groupn=('groupn','mean'),age=('age','mean'),gendern=('gendern','mean'),matchid=('matchid','mean'),paranoiaM=('paranoia','mean'),bdiM=('bdi','mean'),staisM=('stais','mean'),staitM=('stait','mean'))
 ```
 
+## Exporting Datsets
+
+```{python}
+fp_df.to_csv("../Data/FactorsData/paranoia_noNaNs.csv", index=False, header=True)
+fb_df.to_csv("../Data/FactorsData/bdi_noNaNs.csv", index=False, header=True)
+fst_df.to_csv("../Data/FactorsData/anxiety_noNaNs.csv", index=False, header=True)
+f_cleandf.to_csv("../Data/FactorsData/factors_noNaNs.csv", index=False, header=True)
+factors_final_df.to_csv("../Data/FactorsData/factors.csv", index=False, header=True)
+```
 
 # Focusing on severity_df
 
@@ -280,6 +284,7 @@ print("")
 The `ID` and `study` columns have no missing values. The percentage of missing values for all other variables of interest is about the same.
 
 ## Dealing with Missing Values
+
 ```{python}
 # creating new cleaned dataset without missing values
 s_temp = s_df.dropna(axis=0)
@@ -296,8 +301,8 @@ print("")
 len(s_temp.index)
 ```
 
-
 ## Checking Data Types
+
 ```{python}
 # checking each column's datatype
 print("Column datatypes: ")
@@ -315,8 +320,8 @@ print("Column datatypes: ")
 print(s_temp.dtypes)
 ```
 
-
 ## Renaming Columns
+
 ```{python}
 s_temp = s_temp.rename(
   columns={
@@ -343,6 +348,7 @@ scolumns
 ## Checking Min/Max Values
 
 ### Checking Min Values
+
 ```{python}
 # Checking the min values
 print("Smallest BPDSIsum value:", np.nanmin(s_temp.iloc[:, 2].values))
@@ -356,6 +362,7 @@ print("Smallest emptiness value:", np.nanmin(s_temp.iloc[:, 9].values))
 print("Smallest outbursts_of_anger value:", np.nanmin(s_temp.iloc[:, 10].values))
 print("Smallest dissociation_and_paranoid_ideation value:", np.nanmin(s_temp.iloc[:, 11].values))
 ```
+
 This shows something to watch out for when doing analysis. All of the participants of the studies have BPD, so it doesn't make much sense to have no symptoms or BPD in general. Thus, there may be outliers in the data that can be taken out. This can also be because the participants had lower BPD severity to the point where they can no longer be categorized with BPD (maybe after treatment).
 
 ```{python}
@@ -382,6 +389,7 @@ This shows something to watch out for when doing analysis. All of the participan
 ```
 
 ### Checking Max Values
+
 ```{python}
 # Checking the max values
 print("Largest BPDSIsum value:", np.nanmax(s_temp.iloc[:, 2].values))
@@ -413,6 +421,7 @@ check = s_temp.loc[s_temp['identity']>4]
 
 len(check.index)
 ```
+
 ```{python}
 plt.hist(s_temp['identity'], bins=5)
 #plt.hist(severity_df['BPDSI3.1'], bins=5)
@@ -425,7 +434,7 @@ plt.show()
 After looking at the data and distribution, it seems that the `codebook` may have been incorrect. The scale for `identity` appears to be from 0 to 10 just like the other subscale groups. Checked in the original research paper (von Klipstein et al., 2021) and the authors note that all of the subscale groups have a scale from 0 to 10.
 
 ## Exporting Datset
-```{python}
-s_temp.to_csv("../Data/SeverityData/severity_noNaNs", index=False, header=True)
-```
 
+```{python}
+s_temp.to_csv("../Data/SeverityData/severity_noNaNs.csv", index=False, header=True)
+```
