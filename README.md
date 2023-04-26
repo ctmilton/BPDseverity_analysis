@@ -3,4 +3,4 @@ An analysis of factors such as paranoia, depression, and anxiety and how they ca
 
 Data from (Homan et al., 2017) and (von Klipstein et al., 2021).
 
-Code written in Python.
+Code written in Python and can be run on Quarto/RMarkdown.
