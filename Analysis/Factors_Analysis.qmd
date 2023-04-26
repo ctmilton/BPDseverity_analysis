@@ -135,7 +135,7 @@ As seen in the correlation matrix, all factors are very strongly correlated with
 ```{python}
 # no longer converting groupn to (binary) categorical variable
 #df['groupn'] = df['groupn'].astype('category')
-df['gendern'] = df['gendern'].astype('category')
+#df['gendern'] = df['gendern'].astype('category')
 print(df.dtypes)
 ```
 
@@ -149,10 +149,10 @@ paranoia_check.figure.savefig("./LogOddsPlots/sparanoia_log_lin.png")
 `Paranoia` passes the linearity of log odds check!
 
 ```{python}
-plt.clf()
-bdi_check = sns.regplot(x= 'bdiM', y= 'groupn', data= df, logistic= True).set_title("Depression Log Odds Linear Plot")
-
-bdi_check.figure.savefig("./LogOddsPlots/bdi_log_lin.png")
+# plt.clf()
+# bdi_check = sns.regplot(x= 'bdiM', y= 'groupn', data= df, logistic= True).set_title("Depression Log Odds Linear Plot")
+# 
+# bdi_check.figure.savefig("./LogOddsPlots/bdi_log_lin.png")
 ```
 Somehow there is some error here but I'm not sure why. From what we can see, I believe that this should be fine.
 
@@ -182,9 +182,24 @@ We control for the confounding variable `gender`.
 p_model= smf.logit(formula="groupn~paranoiaM+gendern", data=df).fit()
 p_model.summary()
 ```
+Since the p-value for `paranoia` is less than alpha=0.05, we see that `paranoia` is a significant predictor for BPD diagnosis. The p-value for `gender` is much greater than 0.05, so it seems that gender does not have a significant influence on the diagnosis of BPD when in conjunction with `paranoia`.
+
+### Interpreting with Odd Ratios
+```{python}
+# getting the odd ratios, z-value, and 95% CI
+pmodel_odds = pd.DataFrame(np.exp(p_model.params), columns= ['OR'])
+pmodel_odds['z-value']= p_model.pvalues
+pmodel_odds[['2.5%', '97.5%']] = np.exp(p_model.conf_int())
+pmodel_odds
+```
+With every one unit increase in `paranoia score`, the odds of being diagnosed with BPD increases by a factor of about 1.229 [in females and about 1.655 in males; probably don't need that statement].
 
 
 ## BDI Logistic Model
+```{python}
+bdi_model= smf.logit(formula="groupn~bdiM+gendern", data=df).fit()
+bdi_model.summary()
+```
 
 ## Stais Logistic Model
 
