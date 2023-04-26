@@ -246,7 +246,7 @@ run2df = run2df.drop(labels=["index", "run"], axis=1)
 print(run1df.equals(run2df))
 ```
 
-The data in both runs are the same so we only need data from one run in our final dataset. Actually, it appears that all data per participant, regardless of run # or trial # are the same.
+The data in both runs are the same so we only need data from one run in our final dataset. Actually, it appears that all data per participant, regardless of run # or trial #, are the same.
 
 ```{python}
 # averaging the data so that we can have independent data points
