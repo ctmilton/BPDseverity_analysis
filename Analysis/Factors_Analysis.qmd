@@ -12,9 +12,14 @@ import statistics
 import numpy as np
 import pandas as pd
 import scipy.stats
-#import matplotlib.pyplot as plt
-#import seaborn as sns
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+import statsmodels.formula.api as smf
+import seaborn as sns
+sns.set(style="white")
+sns.set(style="whitegrid", color_codes=True)
 ```
+
 
 ```{python}
 df = pd.read_csv(r"../Data/FactorsData/factors.csv")
@@ -22,38 +27,168 @@ df = pd.read_csv(r"../Data/FactorsData/factors.csv")
 
 # Descriptive Statistics
 ```{python}
-summary_paranoia = df.groupby("run", as_index=False)["paranoiaM"].agg(["count","min","max","mean","std"])
-print("Summary for paranoia\n",summary_paranoia)
-print()
-print()
+# more complicated code to get descriptive stats
 
-summary_bdi = df.groupby("run", as_index=False)["bdiM"].agg(["count","min","max","mean","std"])
-print("Summary for bdi\n",summary_bdi)
-print()
-print()
-
-summary_stais = df.groupby("run", as_index=False)["staisM"].agg(["count","min","max","mean","std"])
-print("Summary for stais\n",summary_stais)
-print()
-print()
-
-summary_stait = df.groupby("run", as_index=False)["staitM"].agg(["count","min","max","mean","std"])
-print("Summary for stais\n",summary_stait)
-print()
-print()
+# summary_paranoia = df.groupby("run", as_index=False)["paranoiaM"].agg(["count","min","max","mean","std"])
+# print("Summary for paranoia\n",summary_paranoia)
+# print()
+# print()
+# 
+# summary_bdi = df.groupby("run", as_index=False)["bdiM"].agg(["count","min","max","mean","std"])
+# print("Summary for bdi\n",summary_bdi)
+# print()
+# print()
+# 
+# summary_stais = df.groupby("run", as_index=False)["staisM"].agg(["count","min","max","mean","std"])
+# print("Summary for stais\n",summary_stais)
+# print()
+# print()
+# 
+# summary_stait = df.groupby("run", as_index=False)["staitM"].agg(["count","min","max","mean","std"])
+# print("Summary for stais\n",summary_stait)
+# print()
+# print()
 ```
 
-It seems like the data is the same regardless of the runs.
+```{python}
+# simpler code to get descriptive statistics
+result = df.iloc[:,df.columns.get_loc('paranoiaM'):df.columns.get_loc('staitM')+1].describe()
+print(result)
+```
 
 # Condition Checking
 
-## Constant Variance
+## Distribution of Data
+We will take a look at the distribution for the correlation tests and to better understand the data. We don't need to have normal distributions for logistic regressions.
 
-## Linearity
 
-## Normality??
-Normality is not a necessary condition for logistic regression, but we can still take a look.
+```{python}
+#| message: false
 
+fig, ax = plt.subplots()
+ax.boxplot((df.paranoiaM,df.bdiM,df.staisM,df.staitM),
+            vert=False, showmeans=True, meanline=True,
+            labels=('Paranoia', 'BDI', 'Stais', 'Stait'),
+            patch_artist=True,
+            medianprops={'linewidth': 2, 'color': 'purple'},
+            meanprops={'linewidth': 2, 'color': 'red'})
+plt.show()
+```
+There are potential outliers that may affect our models later. However, they are not too far away so I will keep them.
+
+
+```{python}
+plt.clf()
+fig, ax = plt.subplots()
+ax.hist(df.paranoiaM, 5, cumulative=False)
+ax.set_xlabel('Paranoia')
+ax.set_ylabel('Frequency')
+plt.show()
+```
+`Paranoia` has a right skewed distribution.
+
+```{python}
+plt.clf()
+fig, ax = plt.subplots()
+ax.hist(df.bdiM, 8, cumulative=False)
+ax.set_xlabel('BDI')
+ax.set_ylabel('Frequency')
+plt.show()
+```
+`BDI` has a right skewed distribution.
+
+```{python}
+plt.clf()
+fig, ax = plt.subplots()
+ax.hist(df.staisM, 8, cumulative=False)
+ax.set_xlabel('Stais')
+ax.set_ylabel('Frequency')
+plt.show()
+```
+`Stais` has a right skewed distribution.
+
+```{python}
+plt.clf()
+fig, ax = plt.subplots()
+ax.hist(df.staitM, 8, cumulative=False)
+ax.set_xlabel('Stait')
+ax.set_ylabel('Frequency')
+plt.show()
+```
+`Stait` has a non-normal distribution.
+
+None of the distributions are normal.
+
+
+## Correlation Among Factors
+Since the distributions are non-normal, we use the non-parametric test, Spearman's Rank Correlation Test.
+
+```{python}
+corr = df.iloc[:,df.columns.get_loc('paranoiaM'):df.columns.get_loc('staitM')+1].corr(method='spearman')
+
+print("Spearman's Correlation Matrix")
+print(corr)
+```
+As seen in the correlation matrix, all factors are very strongly correlated with each other. Therefore, we will create logistic models for each individual factor later.
+
+## Linearity of Log Odds
+```{python}
+# no longer converting groupn to (binary) categorical variable
+#df['groupn'] = df['groupn'].astype('category')
+df['gendern'] = df['gendern'].astype('category')
+print(df.dtypes)
+```
+
+```{python}
+plt.clf()
+paranoia_check = sns.regplot(x='paranoiaM', y='groupn', data=df, logistic=True).set_title("Paranoia Log Odds Linear Plot")
+
+paranoia_check.figure.savefig("./LogOddsPlots/sparanoia_log_lin.png")
+```
+
+`Paranoia` passes the linearity of log odds check!
+
+```{python}
+plt.clf()
+bdi_check = sns.regplot(x= 'bdiM', y= 'groupn', data= df, logistic= True).set_title("Depression Log Odds Linear Plot")
+
+bdi_check.figure.savefig("./LogOddsPlots/bdi_log_lin.png")
+```
+Somehow there is some error here but I'm not sure why. From what we can see, I believe that this should be fine.
+
+```{python}
+plt.clf()
+stais_check = sns.regplot(x= 'staisM', y= 'groupn', data= df, logistic= True).set_title("State Anxiety Log Odds Linear Plot")
+
+stais_check.figure.savefig("./LogOddsPlots/stais_log_lin.png")
+```
+
+`Stais` passes the linearity of log odds check!
+
+```{python}
+plt.clf()
+stait_check = sns.regplot(x= 'staitM', y= 'groupn', data= df, logistic= True).set_title("Trait Anxiety Log Odds Linear Plot")
+
+stait_check.figure.savefig("./LogOddsPlots/stait_log_lin.png")
+```
+
+`Stait` passes the linearity of log odds check!
+
+# Logistic Regressions
+We control for the confounding variable `gender`.
+
+## Paranoia Logistic Model
+```{python}
+p_model= smf.logit(formula="groupn~paranoiaM+gendern", data=df).fit()
+p_model.summary()
+```
+
+
+## BDI Logistic Model
+
+## Stais Logistic Model
+
+## Stait Logistic Model
 
 
 

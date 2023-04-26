@@ -97,6 +97,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="Factors_Analysis_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Factors_Analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="Factors_Analysis_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -136,8 +139,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#import matplotlib.pyplot as plt</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#import seaborn as sns</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">'ggplot'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(style<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(style<span class="op">=</span><span class="st">"whitegrid"</span>, color_codes<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="vs">r"../Data/FactorsData/factors.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -145,69 +152,278 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="descriptive-statistics" class="level1">
 <h1>Descriptive Statistics</h1>
 <div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>summary_paranoia <span class="op">=</span> df.groupby(<span class="st">"run"</span>, as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">"paranoiaM"</span>].agg([<span class="st">"count"</span>,<span class="st">"min"</span>,<span class="st">"max"</span>,<span class="st">"mean"</span>,<span class="st">"std"</span>])</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Summary for paranoia</span><span class="ch">\n</span><span class="st">"</span>,summary_paranoia)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>summary_bdi <span class="op">=</span> df.groupby(<span class="st">"run"</span>, as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">"bdiM"</span>].agg([<span class="st">"count"</span>,<span class="st">"min"</span>,<span class="st">"max"</span>,<span class="st">"mean"</span>,<span class="st">"std"</span>])</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Summary for bdi</span><span class="ch">\n</span><span class="st">"</span>,summary_bdi)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>summary_stais <span class="op">=</span> df.groupby(<span class="st">"run"</span>, as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">"staisM"</span>].agg([<span class="st">"count"</span>,<span class="st">"min"</span>,<span class="st">"max"</span>,<span class="st">"mean"</span>,<span class="st">"std"</span>])</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Summary for stais</span><span class="ch">\n</span><span class="st">"</span>,summary_stais)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>summary_stait <span class="op">=</span> df.groupby(<span class="st">"run"</span>, as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">"staitM"</span>].agg([<span class="st">"count"</span>,<span class="st">"min"</span>,<span class="st">"max"</span>,<span class="st">"mean"</span>,<span class="st">"std"</span>])</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Summary for stais</span><span class="ch">\n</span><span class="st">"</span>,summary_stait)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># more complicated code to get descriptive stats</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># summary_paranoia = df.groupby("run", as_index=False)["paranoiaM"].agg(["count","min","max","mean","std"])</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># print("Summary for paranoia\n",summary_paranoia)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># print()</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># print()</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># summary_bdi = df.groupby("run", as_index=False)["bdiM"].agg(["count","min","max","mean","std"])</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># print("Summary for bdi\n",summary_bdi)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># print()</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># print()</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># summary_stais = df.groupby("run", as_index=False)["staisM"].agg(["count","min","max","mean","std"])</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># print("Summary for stais\n",summary_stais)</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># print()</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># print()</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># summary_stait = df.groupby("run", as_index=False)["staitM"].agg(["count","min","max","mean","std"])</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># print("Summary for stais\n",summary_stait)</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># print()</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># print()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simpler code to get descriptive statistics</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> df.iloc[:,df.columns.get_loc(<span class="st">'paranoiaM'</span>):df.columns.get_loc(<span class="st">'staitM'</span>)<span class="op">+</span><span class="dv">1</span>].describe()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Summary for paranoia
-      count   min   max       mean        std
-run                                         
-1.0     21  17.0  54.0  31.095238  11.246798
-2.0     21  17.0  54.0  31.095238  11.246798
-
-
-Summary for bdi
-      count  min   max       mean        std
-run                                        
-1.0     21  0.0  37.0  11.666667  11.019679
-2.0     21  0.0  37.0  11.666667  11.019679
-
-
-Summary for stais
-      count   min   max       mean        std
-run                                         
-1.0     21  20.0  64.0  33.857143  11.921769
-2.0     21  20.0  64.0  33.857143  11.921769
-
-
-Summary for stais
-      count   min   max       mean        std
-run                                         
-1.0     21  20.0  58.0  37.904762  11.549479
-2.0     21  20.0  58.0  37.904762  11.549479
-
-</code></pre>
+<pre><code>       paranoiaM       bdiM     staisM     staitM
+count  21.000000  21.000000  21.000000  21.000000
+mean   31.095238  11.666667  33.857143  37.904762
+std    11.246798  11.019679  11.921769  11.549479
+min    17.000000   0.000000  20.000000  20.000000
+25%    22.000000   3.000000  26.000000  28.000000
+50%    29.000000   9.000000  32.000000  38.000000
+75%    37.000000  14.000000  39.000000  47.000000
+max    54.000000  37.000000  64.000000  58.000000</code></pre>
 </div>
 </div>
-<p>It seems like the data is the same regardless of the runs.</p>
 </section>
 <section id="condition-checking" class="level1">
 <h1>Condition Checking</h1>
-<section id="constant-variance" class="level2">
-<h2 class="anchored" data-anchor-id="constant-variance">Constant Variance</h2>
+<section id="distribution-of-data" class="level2">
+<h2 class="anchored" data-anchor-id="distribution-of-data">Distribution of Data</h2>
+<p>We will take a look at the distribution for the correlation tests and to better understand the data. We don’t need to have normal distributions for logistic regressions.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ax.boxplot((df.paranoiaM,df.bdiM,df.staisM,df.staitM),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>            vert<span class="op">=</span><span class="va">False</span>, showmeans<span class="op">=</span><span class="va">True</span>, meanline<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>            labels<span class="op">=</span>(<span class="st">'Paranoia'</span>, <span class="st">'BDI'</span>, <span class="st">'Stais'</span>, <span class="st">'Stait'</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            patch_artist<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>            medianprops<span class="op">=</span>{<span class="st">'linewidth'</span>: <span class="dv">2</span>, <span class="st">'color'</span>: <span class="st">'purple'</span>},</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            meanprops<span class="op">=</span>{<span class="st">'linewidth'</span>: <span class="dv">2</span>, <span class="st">'color'</span>: <span class="st">'red'</span>})</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-6-output-1.png" width="612" height="415"></p>
+</div>
+</div>
+<p>There are potential outliers that may affect our models later. However, they are not too far away so I will keep them.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ax.hist(df.paranoiaM, <span class="dv">5</span>, cumulative<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Paranoia'</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 672x480 with 0 Axes&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-7-output-2.png" width="581" height="435"></p>
+</div>
+</div>
+<p><code>Paranoia</code> has a right skewed distribution.</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ax.hist(df.bdiM, <span class="dv">8</span>, cumulative<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'BDI'</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 672x480 with 0 Axes&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-8-output-2.png" width="581" height="435"></p>
+</div>
+</div>
+<p><code>BDI</code> has a right skewed distribution.</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ax.hist(df.staisM, <span class="dv">8</span>, cumulative<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Stais'</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 672x480 with 0 Axes&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-9-output-2.png" width="581" height="435"></p>
+</div>
+</div>
+<p><code>Stais</code> has a right skewed distribution.</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>ax.hist(df.staitM, <span class="dv">8</span>, cumulative<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Stait'</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 672x480 with 0 Axes&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-10-output-2.png" width="593" height="435"></p>
+</div>
+</div>
+<p><code>Stait</code> has a non-normal distribution.</p>
+<p>None of the distributions are normal.</p>
 </section>
-<section id="linearity" class="level2">
-<h2 class="anchored" data-anchor-id="linearity">Linearity</h2>
+<section id="correlation-among-factors" class="level2">
+<h2 class="anchored" data-anchor-id="correlation-among-factors">Correlation Among Factors</h2>
+<p>Since the distributions are non-normal, we use the non-parametric test, Spearman’s Rank Correlation Test.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>corr <span class="op">=</span> df.iloc[:,df.columns.get_loc(<span class="st">'paranoiaM'</span>):df.columns.get_loc(<span class="st">'staitM'</span>)<span class="op">+</span><span class="dv">1</span>].corr(method<span class="op">=</span><span class="st">'spearman'</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Spearman's Correlation Matrix"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(corr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spearman's Correlation Matrix
+           paranoiaM      bdiM    staisM    staitM
+paranoiaM   1.000000  0.694290  0.703269  0.810626
+bdiM        0.694290  1.000000  0.637137  0.830454
+staisM      0.703269  0.637137  1.000000  0.805032
+staitM      0.810626  0.830454  0.805032  1.000000</code></pre>
+</div>
+</div>
+<p>As seen in the correlation matrix, all factors are very strongly correlated with each other. Therefore, we will create logistic models for each individual factor later.</p>
 </section>
-<section id="normality" class="level2">
-<h2 class="anchored" data-anchor-id="normality">Normality??</h2>
-<p>Normality is not a necessary condition for logistic regression, but we can still take a look.</p>
+<section id="linearity-of-log-odds" class="level2">
+<h2 class="anchored" data-anchor-id="linearity-of-log-odds">Linearity of Log Odds</h2>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># no longer converting groupn to (binary) categorical variable</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#df['groupn'] = df['groupn'].astype('category')</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'gendern'</span>] <span class="op">=</span> df[<span class="st">'gendern'</span>].astype(<span class="st">'category'</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.dtypes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>id            float64
+run           float64
+groupn        float64
+age           float64
+gendern      category
+matchid       float64
+paranoiaM     float64
+bdiM          float64
+staisM        float64
+staitM        float64
+dtype: object</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>paranoia_check <span class="op">=</span> sns.regplot(x<span class="op">=</span><span class="st">'paranoiaM'</span>, y<span class="op">=</span><span class="st">'groupn'</span>, data<span class="op">=</span>df, logistic<span class="op">=</span><span class="va">True</span>).set_title(<span class="st">"Paranoia Log Odds Linear Plot"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>paranoia_check.figure.savefig(<span class="st">"./LogOddsPlots/sparanoia_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-13-output-1.png" width="593" height="455"></p>
+</div>
+</div>
+<p><code>Paranoia</code> passes the linearity of log odds check!</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>bdi_check <span class="op">=</span> sns.regplot(x<span class="op">=</span> <span class="st">'bdiM'</span>, y<span class="op">=</span> <span class="st">'groupn'</span>, data<span class="op">=</span> df, logistic<span class="op">=</span> <span class="va">True</span>).set_title(<span class="st">"Depression Log Odds Linear Plot"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>bdi_check.figure.savefig(<span class="st">"./LogOddsPlots/bdi_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/numpy/lib/nanfunctions.py:1577: RuntimeWarning:
+
+All-NaN slice encountered
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-14-output-2.png" width="593" height="455"></p>
+</div>
+</div>
+<p>Somehow there is some error here but I’m not sure why. From what we can see, I believe that this should be fine.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>stais_check <span class="op">=</span> sns.regplot(x<span class="op">=</span> <span class="st">'staisM'</span>, y<span class="op">=</span> <span class="st">'groupn'</span>, data<span class="op">=</span> df, logistic<span class="op">=</span> <span class="va">True</span>).set_title(<span class="st">"State Anxiety Log Odds Linear Plot"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>stais_check.figure.savefig(<span class="st">"./LogOddsPlots/stais_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-15-output-1.png" width="593" height="455"></p>
+</div>
+</div>
+<p><code>Stais</code> passes the linearity of log odds check!</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>stait_check <span class="op">=</span> sns.regplot(x<span class="op">=</span> <span class="st">'staitM'</span>, y<span class="op">=</span> <span class="st">'groupn'</span>, data<span class="op">=</span> df, logistic<span class="op">=</span> <span class="va">True</span>).set_title(<span class="st">"Trait Anxiety Log Odds Linear Plot"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>stait_check.figure.savefig(<span class="st">"./LogOddsPlots/stait_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Factors_Analysis_files/figure-html/cell-16-output-1.png" width="593" height="455"></p>
+</div>
+</div>
+<p><code>Stait</code> passes the linearity of log odds check!</p>
+</section>
+</section>
+<section id="logistic-regressions" class="level1">
+<h1>Logistic Regressions</h1>
+<p>We control for the confounding variable <code>gender</code>.</p>
+<section id="paranoia-logistic-model" class="level2">
+<h2 class="anchored" data-anchor-id="paranoia-logistic-model">Paranoia Logistic Model</h2>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p_model<span class="op">=</span> smf.logit(formula<span class="op">=</span><span class="st">"groupn~paranoiaM+gendern"</span>, data<span class="op">=</span>df).fit()</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>p_model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimization terminated successfully.
+         Current function value: 0.418050
+         Iterations 7</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+
+<table class="simpletable">
+<caption>Logit Regression Results</caption>
+<tbody><tr>
+  <th>Dep. Variable:</th>        <td>groupn</td>      <th>  No. Observations:  </th>  <td>    21</td> 
+</tr>
+<tr>
+  <th>Model:</th>                 <td>Logit</td>      <th>  Df Residuals:      </th>  <td>    18</td> 
+</tr>
+<tr>
+  <th>Method:</th>                 <td>MLE</td>       <th>  Df Model:          </th>  <td>     2</td> 
+</tr>
+<tr>
+  <th>Date:</th>            <td>Wed, 26 Apr 2023</td> <th>  Pseudo R-squ.:     </th>  <td>0.3432</td> 
+</tr>
+<tr>
+  <th>Time:</th>                <td>13:48:37</td>     <th>  Log-Likelihood:    </th> <td> -8.7790</td>
+</tr>
+<tr>
+  <th>converged:</th>             <td>True</td>       <th>  LL-Null:           </th> <td> -13.367</td>
+</tr>
+<tr>
+  <th>Covariance Type:</th>     <td>nonrobust</td>    <th>  LLR p-value:       </th>  <td>0.01018</td>
+</tr>
+</tbody></table>
+<table class="simpletable">
+<tbody><tr>
+         <td></td>           <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P&gt;|z|</th>  <th>[0.025</th>    <th>0.975]</th>  
+</tr>
+<tr>
+  <th>Intercept</th>      <td>   -4.5291</td> <td>    2.470</td> <td>   -1.834</td> <td> 0.067</td> <td>   -9.369</td> <td>    0.311</td>
+</tr>
+<tr>
+  <th>gendern[T.1.0]</th> <td>   -0.8532</td> <td>    1.245</td> <td>   -0.685</td> <td> 0.493</td> <td>   -3.293</td> <td>    1.587</td>
+</tr>
+<tr>
+  <th>paranoiaM</th>      <td>    0.2058</td> <td>    0.100</td> <td>    2.067</td> <td> 0.039</td> <td>    0.011</td> <td>    0.401</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="bdi-logistic-model" class="level2">
+<h2 class="anchored" data-anchor-id="bdi-logistic-model">BDI Logistic Model</h2>
+</section>
+<section id="stais-logistic-model" class="level2">
+<h2 class="anchored" data-anchor-id="stais-logistic-model">Stais Logistic Model</h2>
+</section>
+<section id="stait-logistic-model" class="level2">
+<h2 class="anchored" data-anchor-id="stait-logistic-model">Stait Logistic Model</h2>
 </section>
 </section>
 
