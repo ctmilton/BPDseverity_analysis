@@ -231,17 +231,49 @@ print("")
 
 ## Creating Dataset to Use for Analysis
 
+### Comparing the data in Experimental Runs 1 and 2
+
 ```{python}
-factors_final_df = f_cleandf.groupby(["id","run"]).agg(id=('id','mean'),run=('run','mean'),groupn=('groupn','mean'),age=('age','mean'),gendern=('gendern','mean'),matchid=('matchid','mean'),paranoiaM=('paranoia','mean'),bdiM=('bdi','mean'),staisM=('stais','mean'),staitM=('stait','mean'))
+run1df = f_cleandf[f_cleandf.run == 1].reset_index()
+run2df = f_cleandf[f_cleandf.run == 2].reset_index()
+
+run1df = run1df.drop(labels=["index", "run"], axis=1)
+run2df = run2df.drop(labels=["index", "run"], axis=1)
 ```
 
+```{python}
+# seeing if the data for each run is the same
+print(run1df.equals(run2df))
+```
+
+The data in both runs are the same so we only need data from one run in our final dataset. Actually, it appears that all data per participant, regardless of run # or trial # are the same.
+
+```{python}
+# averaging the data so that we can have independent data points
+
+factors_averaged_df = f_cleandf.groupby(["id","run"]).agg(id=('id','mean'),run=('run','mean'),groupn=('groupn','mean'),age=('age','mean'),gendern=('gendern','mean'),matchid=('matchid','mean'),paranoiaM=('paranoia','mean'),bdiM=('bdi','mean'),staisM=('stais','mean'),staitM=('stait','mean'))
+
+factors_averaged_df.head()
+```
+
+```{python}
+# only need the dataset to have values from one run
+factors_final_df = factors_averaged_df.loc[factors_averaged_df['run'] == 1]
+
+#factors_final_df = factors_final_df.drop(labels="index", axis=1)
+```
+
+
 ## Exporting Datsets
+
+We only need the `factors.csv` file to conduct our analyses.
 
 ```{python}
 fp_df.to_csv("../Data/FactorsData/paranoia_noNaNs.csv", index=False, header=True)
 fb_df.to_csv("../Data/FactorsData/bdi_noNaNs.csv", index=False, header=True)
 fst_df.to_csv("../Data/FactorsData/anxiety_noNaNs.csv", index=False, header=True)
 f_cleandf.to_csv("../Data/FactorsData/factors_noNaNs.csv", index=False, header=True)
+factors_averaged_df.to_csv("../Data/FactorsData/factors_averaged.csv", index=False, header=True)
 factors_final_df.to_csv("../Data/FactorsData/factors.csv", index=False, header=True)
 ```
 
