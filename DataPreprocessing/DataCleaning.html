@@ -1015,13 +1015,33 @@ dtype: float64
 <pre><code>True</code></pre>
 </div>
 </div>
-<p>The data in both runs are the same so we only need data from one run in our final dataset. Actually, it appears that all data per participant, regardless of run # or trial # are the same.</p>
+<p>The data in both runs are the same so we only need data from one run in our final dataset. Actually, it appears that all data per participant, regardless of run # or trial #, are the same.</p>
 <div class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># averaging the data so that we can have independent data points</span></span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>factors_averaged_df <span class="op">=</span> f_cleandf.groupby([<span class="st">"id"</span>,<span class="st">"run"</span>]).agg(<span class="bu">id</span><span class="op">=</span>(<span class="st">'id'</span>,<span class="st">'mean'</span>),run<span class="op">=</span>(<span class="st">'run'</span>,<span class="st">'mean'</span>),groupn<span class="op">=</span>(<span class="st">'groupn'</span>,<span class="st">'mean'</span>),age<span class="op">=</span>(<span class="st">'age'</span>,<span class="st">'mean'</span>),gendern<span class="op">=</span>(<span class="st">'gendern'</span>,<span class="st">'mean'</span>),matchid<span class="op">=</span>(<span class="st">'matchid'</span>,<span class="st">'mean'</span>),paranoiaM<span class="op">=</span>(<span class="st">'paranoia'</span>,<span class="st">'mean'</span>),bdiM<span class="op">=</span>(<span class="st">'bdi'</span>,<span class="st">'mean'</span>),staisM<span class="op">=</span>(<span class="st">'stais'</span>,<span class="st">'mean'</span>),staitM<span class="op">=</span>(<span class="st">'stait'</span>,<span class="st">'mean'</span>))</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>factors_averaged_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">'''factors_averaged_df = f_cleandf.groupby(["id","run"]).agg(</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">                      id=('id','mean'),</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co">                      run=('run','mean'),</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co">                      groupn=('groupn','mean'),</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co">                      age=('age','mean'),</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="co">                      gendern=('gendern','mean'),</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="co">                      matchid=('matchid','mean'),</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co">                      paranoiaM=('paranoia','mean'),</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="co">                      bdiM=('bdi','mean'),</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="co">                      staisM=('stais','mean'),</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="co">                      staitM=('stait','mean'))'''</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>factors_averaged_df <span class="op">=</span> f_cleandf.groupby([<span class="st">"id"</span>,<span class="st">"run"</span>]).agg(</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>                      run<span class="op">=</span>(<span class="st">'run'</span>,<span class="st">'mean'</span>),</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>                      groupn<span class="op">=</span>(<span class="st">'groupn'</span>,<span class="st">'mean'</span>),</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>                      age<span class="op">=</span>(<span class="st">'age'</span>,<span class="st">'mean'</span>),</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>                      gendern<span class="op">=</span>(<span class="st">'gendern'</span>,<span class="st">'mean'</span>),</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>                      paranoiaM<span class="op">=</span>(<span class="st">'paranoia'</span>,<span class="st">'mean'</span>),</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>                      bdiM<span class="op">=</span>(<span class="st">'bdi'</span>,<span class="st">'mean'</span>),</span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>                      staisM<span class="op">=</span>(<span class="st">'stais'</span>,<span class="st">'mean'</span>),</span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>                      staitM<span class="op">=</span>(<span class="st">'stait'</span>,<span class="st">'mean'</span>))</span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>factors_averaged_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="32">
 
 <div>
@@ -1031,8 +1051,8 @@ dtype: float64
     <tr>
       <th></th>
       <th></th>
-      <th>id</th>
       <th>run</th>
+      <th>groupn</th>
       <th>...</th>
       <th>staisM</th>
       <th>staitM</th>
@@ -1051,7 +1071,7 @@ dtype: float64
     <tr>
       <th rowspan="2" valign="top">105</th>
       <th>1</th>
-      <td>105.0</td>
+      <td>1.0</td>
       <td>1.0</td>
       <td>...</td>
       <td>46.0</td>
@@ -1059,8 +1079,8 @@ dtype: float64
     </tr>
     <tr>
       <th>2</th>
-      <td>105.0</td>
       <td>2.0</td>
+      <td>1.0</td>
       <td>...</td>
       <td>46.0</td>
       <td>44.0</td>
@@ -1068,7 +1088,7 @@ dtype: float64
     <tr>
       <th rowspan="2" valign="top">106</th>
       <th>1</th>
-      <td>106.0</td>
+      <td>1.0</td>
       <td>1.0</td>
       <td>...</td>
       <td>32.0</td>
@@ -1076,8 +1096,8 @@ dtype: float64
     </tr>
     <tr>
       <th>2</th>
-      <td>106.0</td>
       <td>2.0</td>
+      <td>1.0</td>
       <td>...</td>
       <td>32.0</td>
       <td>47.0</td>
@@ -1085,7 +1105,7 @@ dtype: float64
     <tr>
       <th>107</th>
       <th>1</th>
-      <td>107.0</td>
+      <td>1.0</td>
       <td>1.0</td>
       <td>...</td>
       <td>50.0</td>
@@ -1093,7 +1113,7 @@ dtype: float64
     </tr>
   </tbody>
 </table>
-<p>5 rows × 10 columns</p>
+<p>5 rows × 8 columns</p>
 </div>
 </div>
 </div>

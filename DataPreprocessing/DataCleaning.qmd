@@ -1,6 +1,5 @@
 ---
 title: "Data Cleaning"
-author: "Carol Milton"
 format: html
 editor: visual
 jupyter: python3
@@ -251,7 +250,27 @@ The data in both runs are the same so we only need data from one run in our fina
 ```{python}
 # averaging the data so that we can have independent data points
 
-factors_averaged_df = f_cleandf.groupby(["id","run"]).agg(id=('id','mean'),run=('run','mean'),groupn=('groupn','mean'),age=('age','mean'),gendern=('gendern','mean'),matchid=('matchid','mean'),paranoiaM=('paranoia','mean'),bdiM=('bdi','mean'),staisM=('stais','mean'),staitM=('stait','mean'))
+'''factors_averaged_df = f_cleandf.groupby(["id","run"]).agg(
+                      id=('id','mean'),
+                      run=('run','mean'),
+                      groupn=('groupn','mean'),
+                      age=('age','mean'),
+                      gendern=('gendern','mean'),
+                      matchid=('matchid','mean'),
+                      paranoiaM=('paranoia','mean'),
+                      bdiM=('bdi','mean'),
+                      staisM=('stais','mean'),
+                      staitM=('stait','mean'))'''
+
+factors_averaged_df = f_cleandf.groupby(["id","run"]).agg(
+                      run=('run','mean'),
+                      groupn=('groupn','mean'),
+                      age=('age','mean'),
+                      gendern=('gendern','mean'),
+                      paranoiaM=('paranoia','mean'),
+                      bdiM=('bdi','mean'),
+                      staisM=('stais','mean'),
+                      staitM=('stait','mean'))
 
 factors_averaged_df.head()
 ```
