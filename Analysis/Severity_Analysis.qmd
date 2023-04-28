@@ -1,0 +1,114 @@
+---
+title: "Analysis of Severity Data"
+format: html
+editor: visual
+jupyter: python3
+---
+
+```{python}
+import math
+import statistics
+import numpy as np
+import pandas as pd
+import scipy.stats
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+#import statsmodels.formula.api as smf
+import statsmodels.api as sm
+import pylab as py
+#import seaborn as sns
+#sns.set(style="white")
+#sns.set(style="whitegrid", color_codes=True)
+```
+
+```{python}
+df = pd.read_csv(r"../Data/SeverityData/severity_noNaNs.csv")
+```
+
+# Descriptive Statistics
+```{python}
+result = df.iloc[:,df.columns.get_loc('abandonment'):df.columns.get_loc('dissociation_and_paranoid_ideation')+1].describe()
+print(result)
+```
+
+```{python}
+#| message: false
+
+## creating box plots
+# plt.clf()
+# fig, ax = plt.subplots()
+# ax.boxplot((df.abandonment,
+#             df.interpersonal_relationships,
+#             df.identity,
+#             df.impulsivity,
+#             df.parasuicidal_behavior,
+#             df.affective_instability,
+#             df.emptiness,
+#             df.outbursts_of_anger,
+#             df.dissociation_and_paranoid_ideation),
+#             vert=False, showmeans=True, meanline=True,
+#             labels=('abandonment',
+#                     'interpersonal_relationships',
+#                     'identity',
+#                     'impulsivity',
+#                     'parasuicidal_behavior',
+#                     'affective_instability',
+#                     'emptiness',
+#                     'outbursts_of_anger',
+#                     'dissociation_and_paranoid_ideation'),
+#             patch_artist=True,
+#             medianprops={'linewidth': 2, 'color': 'purple'},
+#             meanprops={'linewidth': 2, 'color': 'red'})
+# plt.show()
+```
+
+```{python}
+sm.qqplot(df.abandonment, line ='45')
+py.show()
+```
+```{python}
+sm.qqplot(df.interpersonal_relationships, line ='45')
+py.show()
+```
+
+```{python}
+sm.qqplot(df.identity, line ='45')
+py.show()
+```
+
+```{python}
+sm.qqplot(df.impulsivity, line ='45')
+py.show()
+```
+
+```{python}
+sm.qqplot(df.parasuicidal_behavior, line ='45')
+py.show()
+```
+
+```{python}
+sm.qqplot(df.affective_instability, line ='45')
+py.show()
+```
+
+```{python}
+sm.qqplot(df.emptiness, line ='45')
+py.show()
+```
+
+```{python}
+sm.qqplot(df.outbursts_of_anger, line ='45')
+py.show()
+```
+
+```{python}
+sm.qqplot(df.dissociation_and_paranoid_ideation, line ='45')
+py.show()
+```
+
+
+
+
+
+
+The distributions look clearly non-normal
