@@ -1,6 +1,5 @@
 ---
-title: "Title TBD"
-author: "Carol Milton"
+title: "Title To Be Determined"
 format: html
 editor: visual
 execute: 
@@ -8,7 +7,29 @@ execute:
 jupyter: python3
 editor_options: 
   chunk_output_type: console
+bibliography: references.bib
 ---
+
+Carol Milton, ctmilton@smith.edu
+
+Affilation: Smith College
+
+
+```{python}
+## code below is to try to incorporate affiliations neatly
+
+# keep-tex: true
+# template-partials: 
+#     - title.tex
+# include-in-header:
+#     text: |
+#       \usepackage[noblocks]{authblk}
+#       \renewcommand*{\Authsep}{, }
+#       \renewcommand*{\Authand}{, }
+#       \renewcommand*{\Authands}{, }
+#       \renewcommand\Affilfont{\small}
+```
+
 
 ```{python}
 import math
@@ -22,5 +43,146 @@ import seaborn as sns
 
 ```{python}
 f_df = pd.read_csv("../Data/FactorsData/factors.csv")
-s_df = pd.read_csv("../Data/SeverityData/severity.csv")
+#s_df = pd.read_csv("../Data/SeverityData/severity.csv")
 ```
+
+
+Keywords: Borderline Personality Disorder, symptoms, severity
+
+***Abstract* — [to be done after getting results]**
+
+# 1. Introduction
+
+Borderline Personality Disorder (BPD) is a type of personality disorder characterized by marked impulsivity, mood instability, complications in interpersonal relationships, and suicidal behavior [@paris_borderline_2005]. It is a serious mental health disorder that negatively impacts occupational and social functioning, while being associated with substance use, high rate of suicide, high rate of suicide attempts, and high health care utilization and costs [@zimmerman_improving_2016]. In a study comparing psychosocial functioning in patients with bipolar disorder and BPD, the depressed patients with BPD had lower rates of graduating from college, were diagnosed with more comorbid disorders, and more frequently had a history of substance use disorders. The depressed patients with BPD also reported more suicidal ideation, higher frequency of suicide attempts, poorer social functioning, and were rated lower on the Global Assessment of Functioning [@zimmerman_distinguishing_2013].
+
+
+A major challenge in treating Borderline Personality Disorder is first diagnosing it accurately within individuals. In the United States alone, about 1.6% of the population has been diagnosed with BPD, yet the actual percentage of the population with BPD may be as high as 5.9% [@noauthor_facts_nodate]. A study found that around 40% of people with BPD have been misdiagnosed with other disorders [@ruggero_borderline_2010]. Oftentimes, BPD can be misdiagnosed as Bipolar II or Major Depressive Disorder (MDD) since the depression in MDD and Bipolar II share many similarities, albeit some noticeable differences, with depression in BPD. This makes it difficult to accurately and easily diagnose BPD in patients [@silk_quality_2010; @bayes_differential_2019]. Unfortunately, there is not enough open source data to dive deeply into diagnosing if a person has BPD, MDD, or Bipolar II. Therefore, we take a step back to focus on the diagnosis of BPD by itself.
+
+
+This paper delves into factors that can be used to set BPD patients apart from non-BPD patients and see if they can be used to accurately diagnose BPD in people. Depression, paranoia, and anxiety are highly associated with BPD and the former three are typically symptoms of the latter [@silk_quality_2010; @freeman_psychological_2005; @howard_significance_2021]. Examining the relationship between these conditions and BPD and using them to predict BPD are useful due to the difficulty in diagnosing BPD and the tendency for misdiagnosis with Major Depressive Disorder (MDD) and Bipolar II [@silk_quality_2010; @bayes_differential_2019]. Previous studies mention the strong associations between depression and anxiety [@hettema_what_2008], anxiety and paranoia [@sun_worry_2019], and depression and paranoia [@moritz_depressive_2017]. This study assesses the correlations between all combinations of the three factors. The results can be further developed to see if BPD can be accurately diagnosed when there are also MDD and Bipolar II patients within the sample used to create the data.
+
+
+Another challenge for treating Borderline Personality Disorder patients is understanding the severity of their BPD and associated symptoms. During treatment, measuring the severity of BPD before and after can be good indicators of whether or not the treatment is working [@zanarini_psychotherapy_2009]; @rinne_ssri_2002]. It is important for individuals to deeply understand how BPD affects their lives, since getting diagnosed with BPD is not the end. A BPD patient should also be aware of the severity of their disorder and whether having some symptoms means possibly having others. In this way, they can anticipate what they might feel/do should their BPD severity be high or increase. Therefore, this study focuses on using the BPD symptoms to predict the severity level of BPD, and checks if a type of symptom can be predicted by the measurements of other symptoms.
+
+The focus of this paper’s investigations can be summarized in the research questions below:
+
+1. Can factors such as depression, anxiety, and paranoia be used to predict whether a person has Borderline Personality Disorder (BPD) or not?
+2. How do the factors, depression, anxiety, and paranoia, correlate with each other?
+3. Can the measurements of certain BPD symptoms predict high severity levels of BPD?
+4. Can the measurements of certain BPD symptoms be used to predict the measurements of other BPD symptoms?
+
+@freeman_insomnia_2012 suggests that anxiety and depression are predictors for paranoia, so finding high correlations among the factors would make sense. @howard_significance_2021 mentions that existing research supports the idea that anxiety disorders contribute to BPD’s profile. This in addition to the work from @silk_quality_2010 and @freeman_psychological_2005 shows that the existing body of literature supports the idea that depression, anxiety, and paranoia can be used to predict BPD. Therefore, the expected results consist of high correlations between depression, state anxiety, trait anxiety, and paranoia. This means that each factor should be used by itself to predict Borderline Personality Disorder or a model that takes into account their interaction could work as well. Additionally, the factors, depression, anxiety, and paranoia, are expected to be good predictors for BPD.
+
+Existing literature that takes the severity scores from the BPDSI-IV and turns it into categorical data have not yet been found. Literature about using the BPDSI-IV sub scale categories to predict BPD severity are likewise not yet found. Therefore, the models created for questions 3 and 4 are a new way of analyzing the measurements for the severity of BPD. In this way, the hope is for this paper to add to the existing literature.
+
+
+The expectation is that groups created from the symptoms in the Severity dataset will be useful in predicting high levels of BPD severity since more symptoms usually means higher severity. Likewise, the measurement of a single group of symptoms may be better predicted by the measurements of the other groups, especially when the values are high.
+
+
+# 2. Methodology
+There were few open source datasets on Borderline Personality Disorder, but the two datasets used in this paper have important information that can be used to answer the main questions of interest.
+
+
+The Factors dataset, accessed through a [Github repository](https://github.com/philipphoman/fae-bpd), is used to investigate questions 1 and 2. The original dataset contains information about 34 participants, between the ages of 18 and 65, who are grouped into pairs of one Borderline Personality Disorder patient and one HCC (healthy control case). Within each pair, the participants share similar ages, sexes, ethnicities, and education-levels. After cleaning up the data, the sample size is 21, consisting of 10 females and 11 males, 14 participants with BPD and 7 HCC. The experiment was run twice and the participants appear to have participated multiple times.
+
+
+The data relevant to the experiment conducted in by @homan_aberrant_2017 is ignored since the only variables necessary are the ones about which group each subject belongs to (BPD or HCC) and their measurements of depression, trait anxiety, state anxiety, and paranoia taken before the experiment. The variable about the participant’s group is a binary categorical variable. The variables for the measurements of depression, trait anxiety, state anxiety, and paranoia are continuous quantitative variables. The measurement for depression was taken using the Beck Depression Inventory (BDI), which has a scale that ranges from 0 to 63 [@smarr_measures_2011]. Paranoia was measured using the Paranoia Scale, which ranges from 20 to 100 [@freeman_psychological_2005]. State and Trait anxiety were measured using the Spielberger State-Trait Anxiety Inventory and each (state/trait anxiety) has a scale from 20 to 80 [@kayikcioglu_state_2017].
+
+
+The original Factors dataset was already mostly cleaned up. The additional steps for preprocessing required getting rid of all NaNs and closely examining the data. Once the data was checked, it was discovered that all values, regardless of runs or trials, are the same. Therefore, when preparing the data for analysis, the data points were condensed to ensure that all observations are independent of each other. The only issue with this is that the number of observations went from 2,176 to 21, which significantly limits the types of statistical analyses that can be done on it. In an ideal dataset, there would be many more participants without repeatedly taking measurements of the same participants to ensure the independence of observations which is necessary for the analysis and will be further explained.
+
+
+[talk about the analysis and models]
+
+[the rest of this section is under editing and has not been finished]
+
+The Borderline Personality Disorder Severity Index, Fourth Edition (BPDSI-IV), which was created using the Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV), is one of the ways to measure the severity of a patient’s BPD. The BPDSI-IV has been identified as a reliable scale for measuring BPD severity (Giesen-Bloo et al., 2010). Therefore, the groups of symptoms in the BPDSI-IV, called the subscale groups, will be used to predict the severity of BPD. This paper divides the severity score of BPD into the categories ‘mild’ ‘moderate’ and ‘severe’. The subscale groups of symptoms are used to predict the ‘severe’ category of BPD severity. Additionally, a model for each subscale group is created such that the subscale group is predicted by a combination of other subscale groups.
+
+
+The Severity dataset contains measurements of the severity of BPD symptoms and the overall BPD severity (which is a sum of the scores of the symptoms). Measurements were taken using the Borderline Personality Disorder Severity Index 4th version (BPDSI-IV). The sample size is 683, taken from 4 survey studies: 18 subjects stem from a study by Dickhaut and Arntz, 86 subjects from a study by Giesen-Bloo and colleagues, 71 subjects from the Oulu BPD Study, and 508 subjects from data collected before 12th May 2016 in the ongoing trial by Wetzelaer and colleagues. More details are in (von Klipstein et al., 2021). [include the implications of taking data that contains info from multiple studies of varying durations and samples; also include how demographic data like sex was not included in dataset so I cannot control for confounding factors]
+Write about the limitations of not knowing the specifics about the sampling IDs (don’t know the details about the participants in the studies like identifying info)
+
+
+The BDSI-IV assesses the occurrences of BPD symptoms in the past three months to calculate the severity of BPD on a scale from zero to eighty-four (Giesen-Bloo et al., 2010). The BPD symptoms can be categorized into groups such as ‘abandonment’, ‘interpersonal relationships’, ‘identity’, ‘impulsivity’, ‘parasuicidal behavior’, ‘affective instability’, ‘emptiness’, ‘outbursts of anger’, and ‘dissociation and paranoid ideation’ (von Klipstein et al., 2021). [include more info about the questions being used to calculate the subscale scores, which are then summed to calculate the severity of BPD]
+
+
+
+Below is a quote from @rinne_ssri_2002 that I will get info from to later write about:
+
+"The index is a fully structured interview that measures the frequency of occurrence of all DSM-IV borderline personality disorder criteria over the past 3 months. Each of the nine DSM criteria is operationalized as a subscale, consisting of three to 11 items. The frequency of each item is measured on an 11-point scale on which 0 indicates no occurrence, 1 represents one occurrence in 3 months, 5 represents six or seven occurrences in 3 months or once every 2 weeks, and 10 indicates daily occurrence. The mean score on the items constitutes the subscale score, and the sum of the subscale scores is the total score. The cutoff for the Borderline Personality Disorder Severity Index is a total score of 15. In order to be included in the study, subjects in this study had to score 20 or more on the Borderline Personality Disorder Severity Index (the mean score in this study was 32.9, SD=7.7)."
+
+- The cutoff for the Borderline Personality Disorder Severity Index is a total score of 15. Moderate started at a score of 20 [@@rinne_ssri_2002].
+
+
+Data Cleaning Steps:
+- The datasets were mostly cleaned up already
+
+Factors Data
+- Made sure to take out trailing whitespaces in the string (object?) variables
+- Created separate datasets that took out the NaNs in certain variables
+- Already wrote about aggregating the data observations
+- Also created a dataset that is completely free of NaNs which I will use in my models
+
+Severity Data
+- Renamed column names to better show what they represent
+- Checked min/max values and found that there some unusual 0 values for a few rows and some values that were below the cutoff for BPD (15)
+- There were too many rows with such data so I did not delete them
+- I believe that the people with these scores did have BPD but the treatments were effective and thus could no longer be diagnosed with BPD
+- Interesting that there were so many observations of such low severity levels that the individuals cannot be diagnosed with BPD anymore
+- One of the symptom subscale groups was encoded to a smaller range of values but in the data, it had the same range as the other subscale groups
+
+
+[Include details about my models]
+
+
+# 3. Results
+
+# 4. Discussion
+
+Limitations:
+- I was unable to control for sex when working with the Severity data because demographic data was unavailable in the dataset
+
+# 5. Future Directions
+
+When compared to bipolar disorder, Borderline Personality Disorder is just as frequent (if not more), just as impairing (if not more), and just as lethal (if not more). Although having BPD comes with such significant effects on a patient’s life, as of 2016, research on BPD has received less than one-tenth of the funding for bipolar disorder from the National Institute of Health. BPD has also been the focus of much less publications in most prestigious psychiatric journals compared to bipolar disorder [@zimmerman_improving_2016]. Therefore, it is imperative that there be more studies done to better understand the implications of BPD and how to better treat patients with BPD in addition to finding ways to accurately diagnose BPD patients without misdiagnosing them as Bipolar II or MDD patients.
+
+- Compare BPD symptoms with those of MDD (major depressive disorder) and Bipolar II to try to categorize the patient according to the symptoms
+- Use symptoms to predict the diagnosis
+- Does sex affect the prediction of BPD severity?
+- There is a paper [@qian_sex_2022] that states that males are more likely to present externalizing symptoms in comparison to females
+- In the future, I want to see how this tendency is presented in BPD severity levels
+- According to [@paris_nature_2007], BPD should be better defined, narrowing it down by requiring more criteria in more domains
+- This means that the definition of BPD may change over time, so then new studies would be required to understand the factors (depression, anxiety, paranoia), symptoms, and BPD severity
+
+
+# 6. Personal Reflection
+
+The research question I originally had is below:
+What social factors affect the development of Borderline Personality Disorder (BPD)?
+
+The dataset I intended to use to answer this question (which I refer to as Factors dataset), did not have an explicit description of the variables so I spent a lot of time decoding the variables [add how I decoded the variables] like how they are measured and what the values in each variable mean using the related research paper (Homan et al., 2017). After most of my investigation was done, I realized that the Factors dataset cannot answer the original question (above) because it does not have the necessary variables. Therefore, I had to change my research question into what is stated below:
+
+1. Can factors such as depression, anxiety, and paranoia be used to predict whether a person has Borderline Personality Disorder (BPD) or not?
+
+
+
+
+- If I could get more data points in Factors data, then I would create training and testing datasets for my logistic regression models in order to evaluate them
+- In this case, I was only able to create the models, but not test them to see if they work well
+
+[More will be added later]
+
+
+# 7. Code Availability
+
+All analysis for this article is available at: [https://github.com/ctmilton/BPDseverity_analysis.git](https://github.com/ctmilton/BPDseverity_analysis.git)
+
+# 8. Acknowledgements
+
+# 9. References
+
+::: {#refs}
+:::
+
+
+
