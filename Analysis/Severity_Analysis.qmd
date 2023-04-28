@@ -19,15 +19,17 @@ import pylab as py
 #import seaborn as sns
 #sns.set(style="white")
 #sns.set(style="whitegrid", color_codes=True)
+
+from sklearn.decomposition import PCA
 ```
 
 ```{python}
-df = pd.read_csv(r"../Data/SeverityData/severity_noNaNs.csv")
+s_df = pd.read_csv(r"../Data/SeverityData/severity_noNaNs.csv")
 ```
 
 # Descriptive Statistics
 ```{python}
-result = df.iloc[:,df.columns.get_loc('abandonment'):df.columns.get_loc('dissociation_and_paranoid_ideation')+1].describe()
+result = s_df.iloc[:,s_df.columns.get_loc('abandonment'):s_df.columns.get_loc('dissociation_and_paranoid_ideation')+1].describe()
 print(result)
 ```
 
@@ -37,15 +39,15 @@ print(result)
 ## creating box plots
 # plt.clf()
 # fig, ax = plt.subplots()
-# ax.boxplot((df.abandonment,
-#             df.interpersonal_relationships,
-#             df.identity,
-#             df.impulsivity,
-#             df.parasuicidal_behavior,
-#             df.affective_instability,
-#             df.emptiness,
-#             df.outbursts_of_anger,
-#             df.dissociation_and_paranoid_ideation),
+# ax.boxplot((s_df.abandonment,
+#             s_df.interpersonal_relationships,
+#             s_df.identity,
+#             s_df.impulsivity,
+#             s_df.parasuicidal_behavior,
+#             s_df.affective_instability,
+#             s_df.emptiness,
+#             s_df.outbursts_of_anger,
+#             s_df.dissociation_and_paranoid_ideation),
 #             vert=False, showmeans=True, meanline=True,
 #             labels=('abandonment',
 #                     'interpersonal_relationships',
@@ -63,52 +65,60 @@ print(result)
 ```
 
 ```{python}
-sm.qqplot(df.abandonment, line ='45')
+sm.qqplot(s_df.abandonment, line ='45')
 py.show()
 ```
 ```{python}
-sm.qqplot(df.interpersonal_relationships, line ='45')
-py.show()
-```
-
-```{python}
-sm.qqplot(df.identity, line ='45')
+sm.qqplot(s_df.interpersonal_relationships, line ='45')
 py.show()
 ```
 
 ```{python}
-sm.qqplot(df.impulsivity, line ='45')
+sm.qqplot(s_df.identity, line ='45')
 py.show()
 ```
 
 ```{python}
-sm.qqplot(df.parasuicidal_behavior, line ='45')
+sm.qqplot(s_df.impulsivity, line ='45')
 py.show()
 ```
 
 ```{python}
-sm.qqplot(df.affective_instability, line ='45')
+sm.qqplot(s_df.parasuicidal_behavior, line ='45')
 py.show()
 ```
 
 ```{python}
-sm.qqplot(df.emptiness, line ='45')
+sm.qqplot(s_df.affective_instability, line ='45')
 py.show()
 ```
 
 ```{python}
-sm.qqplot(df.outbursts_of_anger, line ='45')
+sm.qqplot(s_df.emptiness, line ='45')
 py.show()
 ```
 
 ```{python}
-sm.qqplot(df.dissociation_and_paranoid_ideation, line ='45')
+sm.qqplot(s_df.outbursts_of_anger, line ='45')
 py.show()
 ```
 
+```{python}
+sm.qqplot(s_df.dissociation_and_paranoid_ideation, line ='45')
+py.show()
+```
+
+The distributions look clearly non-normal, but that doesn't matter since I will be using Dimensionality Reduction with PCA, which doesn't require normality in the data.
 
 
+# Dimensionality Reduction with Principle Component Analysis (PCA)
 
+```{python}
+#n_components == min(n_samples, n_features)
+pca = PCA(n_components=3)
+pca.fit_transform(s_df.iloc[:,3:12])
 
+#q = pca.transform(X[:,0:2])
+#xp, yp = q[:,0], q[:,1]
+```
 
-The distributions look clearly non-normal
