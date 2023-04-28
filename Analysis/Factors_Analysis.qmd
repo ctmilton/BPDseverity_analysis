@@ -1,6 +1,5 @@
 ---
 title: "Analysis of Factors Data"
-author: "Carol Milton"
 format: html
 editor: visual
 jupyter: python3
@@ -143,22 +142,25 @@ print(df.dtypes)
 plt.clf()
 paranoia_check = sns.regplot(x='paranoiaM', y='groupn', data=df, logistic=True).set_title("Paranoia Log Odds Linear Plot")
 
-paranoia_check.figure.savefig("./LogOddsPlots/sparanoia_log_lin.png")
+paranoia_check.figure.savefig("./LogOddsPlots/paranoia_log_lin.png")
 ```
 
 `Paranoia` passes the linearity of log odds check!
 
 ```{python}
-# plt.clf()
-# bdi_check = sns.regplot(x= 'bdiM', y= 'groupn', data= df, logistic= True).set_title("Depression Log Odds Linear Plot")
-# 
-# bdi_check.figure.savefig("./LogOddsPlots/bdi_log_lin.png")
+print(pd.isna(df['bdiM']))
+print(df['bdiM'].dtypes)
+
+plt.clf()
+bdi_check = sns.regplot(x='bdiM', y='groupn', data=df, logistic=True).set_title("BDI Log Odds Linear Plot")
+
+#bdi_check.figure.savefig("./LogOddsPlots/bdi_log_lin.png")
 ```
 Somehow there is some error here but I'm not sure why. From what we can see, I believe that this should be fine.
 
 ```{python}
 plt.clf()
-stais_check = sns.regplot(x= 'staisM', y= 'groupn', data= df, logistic= True).set_title("State Anxiety Log Odds Linear Plot")
+stais_check = sns.regplot(x='staisM', y='groupn', data=df, logistic=True).set_title("State Anxiety Log Odds Linear Plot")
 
 stais_check.figure.savefig("./LogOddsPlots/stais_log_lin.png")
 ```
@@ -167,7 +169,7 @@ stais_check.figure.savefig("./LogOddsPlots/stais_log_lin.png")
 
 ```{python}
 plt.clf()
-stait_check = sns.regplot(x= 'staitM', y= 'groupn', data= df, logistic= True).set_title("Trait Anxiety Log Odds Linear Plot")
+stait_check = sns.regplot(x='staitM', y='groupn', data=df, logistic=True).set_title("Trait Anxiety Log Odds Linear Plot")
 
 stait_check.figure.savefig("./LogOddsPlots/stait_log_lin.png")
 ```
@@ -197,8 +199,8 @@ With every one unit increase in `paranoia score`, the odds of being diagnosed wi
 
 ## BDI Logistic Model
 ```{python}
-bdi_model= smf.logit(formula="groupn~bdiM+gendern", data=df).fit()
-bdi_model.summary()
+bdi_model= smf.logit(formula="groupn~bdiM", data=df).fit()
+#bdi_model.summary()
 ```
 
 ## Stais Logistic Model
@@ -206,4 +208,4 @@ bdi_model.summary()
 ## Stait Logistic Model
 
 
-
+# Evaluating the Models

@@ -296,19 +296,19 @@ staitM      0.810626  0.830454  0.805032  1.000000</code></pre>
 <div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># no longer converting groupn to (binary) categorical variable</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#df['groupn'] = df['groupn'].astype('category')</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'gendern'</span>] <span class="op">=</span> df[<span class="st">'gendern'</span>].astype(<span class="st">'category'</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#df['gendern'] = df['gendern'].astype('category')</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.dtypes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>id            float64
-run           float64
-groupn        float64
-age           float64
-gendern      category
-matchid       float64
-paranoiaM     float64
-bdiM          float64
-staisM        float64
-staitM        float64
+<pre><code>id           float64
+run          float64
+groupn       float64
+age          float64
+gendern      float64
+matchid      float64
+paranoiaM    float64
+bdiM         float64
+staisM       float64
+staitM       float64
 dtype: object</code></pre>
 </div>
 </div>
@@ -316,43 +316,34 @@ dtype: object</code></pre>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>paranoia_check <span class="op">=</span> sns.regplot(x<span class="op">=</span><span class="st">'paranoiaM'</span>, y<span class="op">=</span><span class="st">'groupn'</span>, data<span class="op">=</span>df, logistic<span class="op">=</span><span class="va">True</span>).set_title(<span class="st">"Paranoia Log Odds Linear Plot"</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>paranoia_check.figure.savefig(<span class="st">"./LogOddsPlots/sparanoia_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>paranoia_check.figure.savefig(<span class="st">"./LogOddsPlots/paranoia_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Factors_Analysis_files/figure-html/cell-13-output-1.png" width="593" height="455"></p>
 </div>
 </div>
 <p><code>Paranoia</code> passes the linearity of log odds check!</p>
 <div class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>bdi_check <span class="op">=</span> sns.regplot(x<span class="op">=</span> <span class="st">'bdiM'</span>, y<span class="op">=</span> <span class="st">'groupn'</span>, data<span class="op">=</span> df, logistic<span class="op">=</span> <span class="va">True</span>).set_title(<span class="st">"Depression Log Odds Linear Plot"</span>)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>bdi_check.figure.savefig(<span class="st">"./LogOddsPlots/bdi_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/numpy/lib/nanfunctions.py:1577: RuntimeWarning:
-
-All-NaN slice encountered
-</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="Factors_Analysis_files/figure-html/cell-14-output-2.png" width="593" height="455"></p>
-</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.clf()</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># bdi_check = sns.regplot(x= 'bdiM', y= 'groupn', data= df, logistic= True).set_title("Depression Log Odds Linear Plot")</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># bdi_check.figure.savefig("./LogOddsPlots/bdi_log_lin.png")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Somehow there is some error here but I’m not sure why. From what we can see, I believe that this should be fine.</p>
 <div class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>stais_check <span class="op">=</span> sns.regplot(x<span class="op">=</span> <span class="st">'staisM'</span>, y<span class="op">=</span> <span class="st">'groupn'</span>, data<span class="op">=</span> df, logistic<span class="op">=</span> <span class="va">True</span>).set_title(<span class="st">"State Anxiety Log Odds Linear Plot"</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>stais_check.figure.savefig(<span class="st">"./LogOddsPlots/stais_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>stais_check <span class="op">=</span> sns.regplot(x<span class="op">=</span> <span class="st">'staisM'</span>, y<span class="op">=</span> <span class="st">'groupn'</span>, data<span class="op">=</span> df, logistic<span class="op">=</span> <span class="va">True</span>).set_title(<span class="st">"State Anxiety Log Odds Linear Plot"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>stais_check.figure.savefig(<span class="st">"./LogOddsPlots/stais_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Factors_Analysis_files/figure-html/cell-15-output-1.png" width="593" height="455"></p>
 </div>
 </div>
 <p><code>Stais</code> passes the linearity of log odds check!</p>
 <div class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>stait_check <span class="op">=</span> sns.regplot(x<span class="op">=</span> <span class="st">'staitM'</span>, y<span class="op">=</span> <span class="st">'groupn'</span>, data<span class="op">=</span> df, logistic<span class="op">=</span> <span class="va">True</span>).set_title(<span class="st">"Trait Anxiety Log Odds Linear Plot"</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>stait_check.figure.savefig(<span class="st">"./LogOddsPlots/stait_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plt.clf()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>stait_check <span class="op">=</span> sns.regplot(x<span class="op">=</span> <span class="st">'staitM'</span>, y<span class="op">=</span> <span class="st">'groupn'</span>, data<span class="op">=</span> df, logistic<span class="op">=</span> <span class="va">True</span>).set_title(<span class="st">"Trait Anxiety Log Odds Linear Plot"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>stait_check.figure.savefig(<span class="st">"./LogOddsPlots/stait_log_lin.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Factors_Analysis_files/figure-html/cell-16-output-1.png" width="593" height="455"></p>
 </div>
@@ -366,8 +357,8 @@ All-NaN slice encountered
 <section id="paranoia-logistic-model" class="level2">
 <h2 class="anchored" data-anchor-id="paranoia-logistic-model">Paranoia Logistic Model</h2>
 <div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p_model<span class="op">=</span> smf.logit(formula<span class="op">=</span><span class="st">"groupn~paranoiaM+gendern"</span>, data<span class="op">=</span>df).fit()</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>p_model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>p_model<span class="op">=</span> smf.logit(formula<span class="op">=</span><span class="st">"groupn~paranoiaM+gendern"</span>, data<span class="op">=</span>df).fit()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>p_model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Optimization terminated successfully.
          Current function value: 0.418050
@@ -390,7 +381,7 @@ All-NaN slice encountered
   <th>Date:</th>            <td>Wed, 26 Apr 2023</td> <th>  Pseudo R-squ.:     </th>  <td>0.3432</td> 
 </tr>
 <tr>
-  <th>Time:</th>                <td>13:48:37</td>     <th>  Log-Likelihood:    </th> <td> -8.7790</td>
+  <th>Time:</th>                <td>15:10:15</td>     <th>  Log-Likelihood:    </th> <td> -8.7790</td>
 </tr>
 <tr>
   <th>converged:</th>             <td>True</td>       <th>  LL-Null:           </th> <td> -13.367</td>
@@ -401,23 +392,79 @@ All-NaN slice encountered
 </tbody></table>
 <table class="simpletable">
 <tbody><tr>
-         <td></td>           <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P&gt;|z|</th>  <th>[0.025</th>    <th>0.975]</th>  
+      <td></td>         <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P&gt;|z|</th>  <th>[0.025</th>    <th>0.975]</th>  
 </tr>
 <tr>
-  <th>Intercept</th>      <td>   -4.5291</td> <td>    2.470</td> <td>   -1.834</td> <td> 0.067</td> <td>   -9.369</td> <td>    0.311</td>
+  <th>Intercept</th> <td>   -4.5291</td> <td>    2.470</td> <td>   -1.834</td> <td> 0.067</td> <td>   -9.369</td> <td>    0.311</td>
 </tr>
 <tr>
-  <th>gendern[T.1.0]</th> <td>   -0.8532</td> <td>    1.245</td> <td>   -0.685</td> <td> 0.493</td> <td>   -3.293</td> <td>    1.587</td>
+  <th>paranoiaM</th> <td>    0.2058</td> <td>    0.100</td> <td>    2.067</td> <td> 0.039</td> <td>    0.011</td> <td>    0.401</td>
 </tr>
 <tr>
-  <th>paranoiaM</th>      <td>    0.2058</td> <td>    0.100</td> <td>    2.067</td> <td> 0.039</td> <td>    0.011</td> <td>    0.401</td>
+  <th>gendern</th>   <td>   -0.8532</td> <td>    1.245</td> <td>   -0.685</td> <td> 0.493</td> <td>   -3.293</td> <td>    1.587</td>
 </tr>
 </tbody></table>
 </div>
 </div>
+<p>Since the p-value for <code>paranoia</code> is less than alpha=0.05, we see that <code>paranoia</code> is a significant predictor for BPD diagnosis. The p-value for <code>gender</code> is much greater than 0.05, so it seems that gender does not have a significant influence on the diagnosis of BPD when in conjunction with <code>paranoia</code>.</p>
+<section id="interpreting-with-odd-ratios" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-with-odd-ratios">Interpreting with Odd Ratios</h3>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># getting the odd ratios, z-value, and 95% CI</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>pmodel_odds <span class="op">=</span> pd.DataFrame(np.exp(p_model.params), columns<span class="op">=</span> [<span class="st">'OR'</span>])</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>pmodel_odds[<span class="st">'z-value'</span>]<span class="op">=</span> p_model.pvalues</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>pmodel_odds[[<span class="st">'2.5%'</span>, <span class="st">'97.5%'</span>]] <span class="op">=</span> np.exp(p_model.conf_int())</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>pmodel_odds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>OR</th>
+      <th>z-value</th>
+      <th>2.5%</th>
+      <th>97.5%</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Intercept</th>
+      <td>0.010790</td>
+      <td>0.066657</td>
+      <td>0.000085</td>
+      <td>1.364961</td>
+    </tr>
+    <tr>
+      <th>paranoiaM</th>
+      <td>1.228527</td>
+      <td>0.038744</td>
+      <td>1.010705</td>
+      <td>1.493291</td>
+    </tr>
+    <tr>
+      <th>gendern</th>
+      <td>0.426041</td>
+      <td>0.493145</td>
+      <td>0.037128</td>
+      <td>4.888780</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>With every one unit increase in <code>paranoia score</code>, the odds of being diagnosed with BPD increases by a factor of about 1.229 [in females and about 1.655 in males; probably don’t need that statement].</p>
+</section>
 </section>
 <section id="bdi-logistic-model" class="level2">
 <h2 class="anchored" data-anchor-id="bdi-logistic-model">BDI Logistic Model</h2>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#bdi_model= smf.logit(formula="groupn~bdiM+gendern", data=df).fit()</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co">#bdi_model.summary()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="stais-logistic-model" class="level2">
 <h2 class="anchored" data-anchor-id="stais-logistic-model">Stais Logistic Model</h2>
