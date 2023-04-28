@@ -116,9 +116,14 @@ The distributions look clearly non-normal, but that doesn't matter since I will 
 ```{python}
 #n_components == min(n_samples, n_features)
 pca = PCA(n_components=3)
-pca.fit_transform(s_df.iloc[:,3:12])
+pca.fit(s_df.iloc[:,3:12])
+```
 
-#q = pca.transform(X[:,0:2])
-#xp, yp = q[:,0], q[:,1]
+```{python}
+q = pca.transform(s_df.iloc[:,3:12])
+xp, yp = q[:,0], q[:,1]
+
+#import plotly.express as px
+#px.scatter_3d(x=xp, y=yp, z=z, labels={"x":"x'", "y":"y'", "z":"z"}).show()
 ```
 
