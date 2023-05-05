@@ -16,10 +16,12 @@ plt.style.use('ggplot')
 #import statsmodels.formula.api as smf
 import statsmodels.api as sm
 import pylab as py
+import plotly.express as px
 #import seaborn as sns
 #sns.set(style="white")
 #sns.set(style="whitegrid", color_codes=True)
 
+from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
 ```
 
@@ -65,65 +67,164 @@ print(result)
 ```
 
 ```{python}
+# Creating qq plots
+# def Create_qq_plots(x):
+#   sm.qqplot(x, line ='45')
+#   py.show()
+```
+
+```{python}
+# for x in s_df.iloc[:,2:12].columns:
+#   Create_qq_plots(s_df.loc(:,x))
+#   #print(s_df.loc[0:4,x])
+```
+
+
+
+```{python}
 sm.qqplot(s_df.abandonment, line ='45')
 py.show()
 ```
 ```{python}
+py.close()
 sm.qqplot(s_df.interpersonal_relationships, line ='45')
 py.show()
 ```
 
 ```{python}
+py.close()
 sm.qqplot(s_df.identity, line ='45')
 py.show()
 ```
 
 ```{python}
+py.close()
 sm.qqplot(s_df.impulsivity, line ='45')
 py.show()
 ```
 
 ```{python}
+py.close()
 sm.qqplot(s_df.parasuicidal_behavior, line ='45')
 py.show()
 ```
 
 ```{python}
+py.close()
 sm.qqplot(s_df.affective_instability, line ='45')
 py.show()
 ```
 
 ```{python}
+py.close()
 sm.qqplot(s_df.emptiness, line ='45')
 py.show()
 ```
 
 ```{python}
+py.close()
 sm.qqplot(s_df.outbursts_of_anger, line ='45')
 py.show()
 ```
 
 ```{python}
+py.close()
 sm.qqplot(s_df.dissociation_and_paranoid_ideation, line ='45')
 py.show()
 ```
 
 The distributions look clearly non-normal, but that doesn't matter since I will be using Dimensionality Reduction with PCA, which doesn't require normality in the data.
 
+# Creating Training and Testing Datasets
+
+```{python}
+# Creating X to contain values from predictor variables
+# Creating y to contain values from dependent variable
+X = s_df.iloc[:,3:12].values
+y = s_df.loc[:,'BPDSIsum']
+```
+
+```{python}
+# Creating training and testing datasets
+X_train, X_test, y_train, y_test = train_test_split(X,y,random_state=42)
+
+# Checking number distribution across the variables
+X_train.shape, X_test.shape, y_train.shape, y_test.shape
+```
+
+
+# Using K-Means Clustering to Create BPDSIsum Categories
+```{python}
+from sklearn.preprocessing import scale
+from sklearn.cluster import KMeans
+from sklearn import metrics
+```
+
+```{python}
+# Don't need training or testing data splitting
+
+# Creating data set containing all features (including BPDSIsum)
+# Scaling data to improve speed of calculations
+scale_data = scale(s_df.iloc[:,2:12])
+
+# Stating number of clusters
+k = 5
+
+# Getting number of observations and number of features
+n, features = scale_data.shape
+```
+
+```{python}
+# Clustering performance evaluation code from Sklearn
+# https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation
+# Function from 
+# https://www.techwithtim.net/tutorials/machine-learning-python/k-means-2/
+
+def bench_k_means(estimator, name, data):
+    estimator.fit(data)
+    print('%-9s\t%i\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f'
+          % (name, estimator.inertia_,
+             metrics.homogeneity_score(y, estimator.labels_),
+             metrics.completeness_score(y, estimator.labels_),
+             metrics.v_measure_score(y, estimator.labels_),
+             metrics.adjusted_rand_score(y, estimator.labels_),
+             metrics.adjusted_mutual_info_score(y,  estimator.labels_),
+             metrics.silhouette_score(data, estimator.labels_,
+                                      metric='euclidean')))
+                                      
+# Euclidean distance is absolute distance between 2 vectors in space
+```
+
+```{python}
+# Creating classifier
+# n_cluster is number of clusters
+# init to generate centroids, set initial centroids at random positions
+# n_init amount of times to run algorithm, takes best one to be classifier
+clf = KMeans(n_clusters=k, init='random', n_init=10)
+bench_k_means(clf, "1", scale_data)
+```
+
+
+
 
 # Dimensionality Reduction with Principle Component Analysis (PCA)
 
 ```{python}
 #n_components == min(n_samples, n_features)
-pca = PCA(n_components=3)
-pca.fit(s_df.iloc[:,3:12])
+pca = PCA()
+pca.n_components = 2
+pca_df = pca.fit_transform(X_train)
 ```
 
 ```{python}
-q = pca.transform(s_df.iloc[:,3:12])
-xp, yp = q[:,0], q[:,1]
+dim_fig = px.scatter(x=pca_df[:,0], y=pca_df[:,1], color=y_train)
+dim_fig.show()
+```
 
-#import plotly.express as px
-#px.scatter_3d(x=xp, y=yp, z=z, labels={"x":"x'", "y":"y'", "z":"z"}).show()
+```{python}
+from sklearn.neighbors import KNeighborsClassifier
+knn_classifier = KNeighborsClassifier(n_neighbors=3, algorithm='auto')
+knn_classifier.fit(pca_df, y_train)
+knn_classifier.score(pca.transform(X_test), y_test)
 ```
 
