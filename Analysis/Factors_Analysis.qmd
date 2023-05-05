@@ -155,8 +155,8 @@ paranoia_check.figure.savefig("./LogOddsPlots/paranoia_log_lin.png")
 plt.clf()
 bdi_check = sns.regplot(x='bdiM', y='groupn', data=f_df,
             logistic=True).set_title("BDI Log Odds Linear Plot")
-
-#bdi_check.figure.savefig("./LogOddsPlots/bdi_log_lin.png")
+            
+bdi_check.figure.savefig("./LogOddsPlots/bdi_log_lin.png")
 ```
 Somehow there is some error here but I'm not sure why. From what we can see, I believe that this should be fine.
 
