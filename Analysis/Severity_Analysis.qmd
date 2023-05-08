@@ -27,9 +27,15 @@ from sklearn.decomposition import PCA
 
 ```{python}
 s_df = pd.read_csv(r"../Data/SeverityData/severity_noNaNs.csv")
+s_df = s_df.iloc[:,2:12]
 ```
 
 # Descriptive Statistics
+```{python}
+print(s_df.dtypes)
+```
+
+
 ```{python}
 result = s_df.iloc[:,s_df.columns.get_loc('abandonment'):s_df.columns.get_loc('dissociation_and_paranoid_ideation')+1].describe()
 print(result)
@@ -135,12 +141,21 @@ py.show()
 
 The distributions look clearly non-normal, but that doesn't matter since I will be using Dimensionality Reduction with PCA, which doesn't require normality in the data.
 
+```{python}
+# Creating correlation matrix
+corr = s_df.corr(method='spearman')
+
+print("Spearman's Correlation Matrix")
+print(corr)
+```
+
+
 # Creating Training and Testing Datasets
 
 ```{python}
 # Creating X to contain values from predictor variables
 # Creating y to contain values from dependent variable
-X = s_df.iloc[:,3:12].values
+X = s_df.iloc[:,1:10].values
 y = s_df.loc[:,'BPDSIsum']
 ```
 
@@ -151,6 +166,54 @@ X_train, X_test, y_train, y_test = train_test_split(X,y,random_state=42)
 # Checking number distribution across the variables
 X_train.shape, X_test.shape, y_train.shape, y_test.shape
 ```
+
+
+# Dimensionality Reduction with Principle Component Analysis (PCA)
+
+```{python}
+#n_components == min(n_samples, n_features)
+# Initializing PCA and setting number of components to retain
+pca = PCA()
+pca.n_components = 7
+
+# Fitting the data and transforming it to reduced dimension
+X_reduced = pca.fit_transform(X)
+```
+
+```{python}
+# Finding portion of dataset's variance explained by each component
+explained_variance_ratio = pca.explained_variance_ratio_
+
+# Getting cumulative explained variance to determine how many componenents to retain
+cumulative_variance = np.cumsum(explained_variance_ratio)
+```
+
+```{python}
+# Reconstructing the data after an inverse transformation
+X_reconstructed = pca.inverse_transform(X_reduced)
+# Calculating reconstruction error rate
+# Which compares reconstructed data from reduced dimensions to original data
+reconstruction_error = np.mean(np.square(X - X_reconstructed))
+
+print("Reconstruction Error:", reconstruction_error)
+```
+
+To get a reconstruction error rate below .5, we need at least 5 components. Getting 6 componenets significantly reduces the reconstruction error rate.
+
+
+```{python}
+#dim_fig = px.scatter(x=pca_df[:,0], y=pca_df[:,1], color=y_train)
+#dim_fig.show()
+```
+
+```{python}
+# Evaluating the new variable groups
+from sklearn.neighbors import KNeighborsClassifier
+knn_classifier = KNeighborsClassifier(n_neighbors=2, algorithm='auto')
+knn_classifier.fit(pca_df, y_train)
+knn_classifier.score(pca.transform(X_test), y_test)
+```
+
 
 
 # Using K-Means Clustering to Create BPDSIsum Categories
@@ -168,7 +231,7 @@ from sklearn import metrics
 scale_data = scale(s_df.iloc[:,2:12])
 
 # Stating number of clusters
-k = 5
+k = len(np.unique(y))
 
 # Getting number of observations and number of features
 n, features = scale_data.shape
@@ -206,25 +269,4 @@ bench_k_means(clf, "1", scale_data)
 
 
 
-
-# Dimensionality Reduction with Principle Component Analysis (PCA)
-
-```{python}
-#n_components == min(n_samples, n_features)
-pca = PCA()
-pca.n_components = 2
-pca_df = pca.fit_transform(X_train)
-```
-
-```{python}
-dim_fig = px.scatter(x=pca_df[:,0], y=pca_df[:,1], color=y_train)
-dim_fig.show()
-```
-
-```{python}
-from sklearn.neighbors import KNeighborsClassifier
-knn_classifier = KNeighborsClassifier(n_neighbors=3, algorithm='auto')
-knn_classifier.fit(pca_df, y_train)
-knn_classifier.score(pca.transform(X_test), y_test)
-```
 
