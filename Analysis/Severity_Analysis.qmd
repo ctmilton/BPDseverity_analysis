@@ -184,7 +184,7 @@ X_reduced = pca.fit_transform(X)
 # Finding portion of dataset's variance explained by each component
 explained_variance_ratio = pca.explained_variance_ratio_
 
-# Getting cumulative explained variance to determine how many componenents to retain
+# Getting cumulative explained variance to determine how many components to retain
 cumulative_variance = np.cumsum(explained_variance_ratio)
 ```
 
