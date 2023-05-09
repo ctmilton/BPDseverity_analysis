@@ -137,6 +137,12 @@ Severity Data
 
 # 3. Results
 
+Factors Analysis:
+- High correlations between all factors
+- Kept getting perfect separation error for the factors because the sample size is small and there was a clear separation in outcome depending on whether the predictor is above or below a certain variable
+- Due to small sample size (21), could not create train/test dataset
+- Therefore, used p-values and r-squared to evaluate models
+
 # 4. Discussion
 
 Limitations:
