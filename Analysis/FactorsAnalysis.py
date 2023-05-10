@@ -1,5 +1,4 @@
 import numpy as np
-exit
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -13,6 +12,7 @@ plt.style.use('ggplot')
 sns.set(style="white")
 sns.set(style="whitegrid", color_codes=True)
 
+# Replace the file path
 f_df = pd.read_csv(r'/Users/carol/Desktop/factors.csv')
 
 # #print(f_df)
@@ -224,5 +224,5 @@ for fold, score in enumerate(scores):
 average_brier_score = scores.mean()
 
 print("Average Brier Score: ", average_brier_score)
-print("The Brier score of 0.13, shows that the model's predicted outcomes are fairly close to the real outcomes.")
+print("The Brier score of 0.14, shows that the model's predicted outcomes are fairly close to the real outcomes.")
 

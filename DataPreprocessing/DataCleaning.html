@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Carol Milton">
 
 <title>Data Cleaning</title>
 <style>
@@ -119,12 +118,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Carol Milton </p>
-          </div>
-  </div>
     
   
     
@@ -1547,10 +1540,12 @@ Largest dissociation_and_paranoid_ideation value: 10.0</code></pre>
 <p>After looking at the data and distribution, it seems that the <code>codebook</code> may have been incorrect. The scale for <code>identity</code> appears to be from 0 to 10 just like the other subscale groups. Checked in the original research paper (von Klipstein et al., 2021) and the authors note that all of the subscale groups have a scale from 0 to 10.</p>
 </section>
 </section>
-<section id="exporting-datset" class="level2">
-<h2 class="anchored" data-anchor-id="exporting-datset">Exporting Datset</h2>
+<section id="exporting-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="exporting-dataset">Exporting Dataset</h2>
 <div class="cell" data-execution_count="54">
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>s_temp.to_csv(<span class="st">"../Data/SeverityData/severity_noNaNs.csv"</span>, index<span class="op">=</span><span class="va">False</span>, header<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>s_temp.to_csv(<span class="st">"../Data/SeverityData/severity_noNaNs.csv"</span>, index<span class="op">=</span><span class="va">False</span>, header<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>s_df <span class="op">=</span> s_temp.iloc[:,<span class="dv">2</span>:<span class="dv">12</span>]</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>s_df.to_csv(<span class="st">"../Data/SeverityData/severity_old.csv"</span>, index<span class="op">=</span><span class="va">False</span>, header<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>

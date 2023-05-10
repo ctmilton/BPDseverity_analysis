@@ -245,7 +245,7 @@ run2df = run2df.drop(labels=["index", "run"], axis=1)
 print(run1df.equals(run2df))
 ```
 
-The data in both runs are the same so we only need data from one run in our final dataset. Actually, it appears that all data per participant, regardless of run # or trial #, are the same.
+The data in both runs are the same so we only need data from one run in our final dataset. Actually, it appears that all data per participant, regardless of run \# or trial #, are the same.
 
 ```{python}
 # averaging the data so that we can have independent data points
@@ -281,7 +281,6 @@ factors_final_df = factors_averaged_df.loc[factors_averaged_df['run'] == 1]
 
 #factors_final_df = factors_final_df.drop(labels="index", axis=1)
 ```
-
 
 ## Exporting Datsets
 
@@ -484,8 +483,10 @@ plt.show()
 
 After looking at the data and distribution, it seems that the `codebook` may have been incorrect. The scale for `identity` appears to be from 0 to 10 just like the other subscale groups. Checked in the original research paper (von Klipstein et al., 2021) and the authors note that all of the subscale groups have a scale from 0 to 10.
 
-## Exporting Datset
+## Exporting Dataset
 
 ```{python}
 s_temp.to_csv("../Data/SeverityData/severity_noNaNs.csv", index=False, header=True)
+s_df = s_temp.iloc[:,2:12]
+s_df.to_csv("../Data/SeverityData/severity_old.csv", index=False, header=True)
 ```

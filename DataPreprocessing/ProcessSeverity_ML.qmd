@@ -1,0 +1,271 @@
+---
+title: "Processing Severity Data with Machine Learning"
+format: html
+editor: visual
+jupyter: python3
+---
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pylab as py
+import statsmodels.api as sm
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_score, KFold
+from sklearn.metrics import mean_squared_error
+```
+
+```{python}
+s_df = pd.read_csv(r"../Data/SeverityData/severity_old.csv")
+```
+
+```{python}
+# print(s_df.dtypes)
+#
+# print("Descriptive Statistics")
+# descriptive = s_df.iloc[:, s_df.columns.get_loc('abandonment'):s_df.columns.get_loc(
+#     'dissociation_and_paranoid_ideation') + 1].describe()
+# print(descriptive)
+#
+# sm.qqplot(s_df.abandonment, line='45')
+# py.show()
+#
+# py.close()
+# sm.qqplot(s_df.interpersonal_relationships, line='45')
+# py.show()
+#
+# py.close()
+# sm.qqplot(s_df.identity, line='45')
+# py.show()
+#
+# py.close()
+# sm.qqplot(s_df.impulsivity, line='45')
+# py.show()
+#
+# py.close()
+# sm.qqplot(s_df.parasuicidal_behavior, line='45')
+# py.show()
+#
+# py.close()
+# sm.qqplot(s_df.affective_instability, line='45')
+# py.show()
+#
+# py.close()
+# sm.qqplot(s_df.emptiness, line='45')
+# py.show()
+#
+# py.close()
+# sm.qqplot(s_df.outbursts_of_anger, line='45')
+# py.show()
+#
+# py.close()
+# sm.qqplot(s_df.dissociation_and_paranoid_ideation, line='45')
+# py.show()
+#
+# print("The distributions look clearly non-normal, but that doesn't matter since I will be using Dimensionality "
+#       "Reduction with PCA, which doesn't require normality in the data.")
+#
+# plt.hist(s_df.BPDSIsum, bins=8)
+# plt.show()
+# print("The distribution is skewed right.")
+
+#print("Let's create the categorical variable: BPDSIsumCat.")
+```
+
+# Using K-Means Clustering to Create Categories
+
+```{python}
+# Assigning the BPDSIsum variable as outcome_variable
+original_var = s_df.BPDSIsum
+
+# Scaling the original variable
+scaler = StandardScaler()
+scaled_var = scaler.fit_transform(original_var.values.reshape(-1, 1))
+
+# Reshaping the variable
+reshaped_var = scaled_var.reshape(-1, 1)
+
+# Preparing input data X
+X = reshaped_var
+
+# Next, we want to determine the number of clusters
+
+# Setting a range of values for k
+k_values = range(1, 11)
+
+# Initializing an empty list to store the WCSS values for each k
+wcss = []
+
+# Calculating the WCSS for each value of k
+for k in k_values:
+    kmeans = KMeans(n_clusters=k, n_init='auto', random_state=42)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+
+# # Plotting the WCSS values
+# plt.plot(k_values, wcss, marker='o')
+# plt.xlabel('Number of Clusters (k)')
+# plt.ylabel('Within-Cluster Sum of Squares (WCSS)')
+# plt.title('Scree Plot')
+# plt.show()
+
+print("Either 2 or 3 clusters should work.")
+print("Let's do 3 clusters.")
+# Setting k (number of clusters) to 3
+k = 3
+
+# Instantiating KMeans
+kmeans = KMeans(n_clusters=k, n_init='auto', random_state=42)
+
+# Fitting the k-means model to the data
+kmeans.fit(X)
+
+print("Clusters have been created!\n\n")
+
+# Obtaining the cluster assignments
+cluster_labels = kmeans.predict(X)
+
+# Evaluating the clusters
+print("Let's evaluate the clusters.")
+# Obtaining the within-cluster sum of squares (WCSS)
+wcss = kmeans.inertia_
+print("WCSS:", wcss)
+print("The WCSS shows the compactness of the clusters.")
+print("This is not as important to us because we want to create baselines for our BPD severity categories.")
+
+# Calculate the silhouette score
+silhouette_avg = silhouette_score(X, cluster_labels)
+print("Avg Silhouette Score:", silhouette_avg)
+print("This score shows that the clusters have a moderate level of separation and compactness.")
+print("Therefore, we will continue with three clusters to create 3 BPD severity categories.")
+
+# Assigning names to each cluster
+# They correspond with the severity levels of BPD
+cluster_names = {
+    0: 'Low',
+    1: 'Medium',
+    2: 'High'
+}
+# Creating a new variable with categorical labels based on cluster names
+BPDSIsumCat = [cluster_names[label] for label in cluster_labels]
+
+# Creating resulting categorical variable in original dataset!!
+s_df['BPDSIsumCat'] = BPDSIsumCat
+
+print(s_df.head())
+print("It works! But wait, it seems that the values got mixed")
+print("when trying to add BPDSIsumCat back to the original df.")
+```
+
+```{python}
+# Unscaling to original data
+unscaled_variable = scaler.inverse_transform(X)
+
+# Getting min/max values for each cluster
+for cluster in range(3):
+    cluster_values = unscaled_variable[cluster_labels == cluster]
+    min_value = np.min(cluster_values)
+    max_value = np.max(cluster_values)
+    print(f"Cluster {cluster + 1}: Min = {min_value:.2f}, Max = {max_value:.2f}")
+```
+
+```{python}
+# Creating BPDSIsumCat using thresholds from clusters
+s_df['BPDSIsumCat'] = ''
+
+for index, row in s_df.iterrows():
+    if row['BPDSIsum'] <= 17.24:
+        s_df.loc[index, 'BPDSIsumCat'] = 'Low'
+    elif row['BPDSIsum'] <= 31.12:
+        s_df.loc[index, 'BPDSIsumCat'] = 'Medium'
+    else:
+        s_df.loc[index, 'BPDSIsumCat'] = 'High'
+```
+
+# Using Dimensionality Reduction to Reduce Number of Predictors
+
+```{python}
+# Creating correlation matrix with non-parametric test
+corr = s_df.corr(method='spearman')
+print("Spearman's Correlation Matrix")
+print(corr)
+
+print("\nThere is moderate correlations among the symptom groups.")
+
+# Creating new input matrix X for predictor values
+X = s_df.iloc[:, s_df.columns.get_loc('abandonment'):s_df.columns.get_loc(
+    'dissociation_and_paranoid_ideation')+1].values
+y = s_df.loc[:, 'BPDSIsumCat']
+
+# Creating training and testing datasets
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# Checking number distribution across the variables
+print("Checking distibution of training/testing sets.")
+print("\n\nX_train.shape, X_test.shape, y_train.shape, y_test.shape")
+print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+
+# Initializing PCA and setting number of components to retain
+pca = PCA()
+pca.n_components = 7
+
+# Fitting the data and transforming it to reduced dimension
+X_reduced = pca.fit_transform(X_train)
+print("\nFitted data to pca!\n")
+
+# Finding portion of dataset's variance explained by each component
+explained_variance_ratio = pca.explained_variance_ratio_
+print("The portion of variance explained by each component:", explained_variance_ratio)
+
+# Getting cumulative explained variance to determine how many components to retain
+cumulative_variance = np.cumsum(explained_variance_ratio)
+print("The cumulative explained variance to determine how many components to retain:", cumulative_variance)
+
+# Plotting cumulative explained variance ratio to determine number of components
+plt.plot(range(1, len(cumulative_variance)+1), cumulative_variance, marker='o')
+plt.xlabel('Number of Components')
+plt.ylabel('Cumulative Explained Variance Ratio')
+plt.title('Explained Variance Ratio by Number of Components')
+plt.show()
+# This plot doesn't help much, so let's try another one
+
+# Plotting scree plot
+plt.plot(range(1, len(explained_variance_ratio) + 1), explained_variance_ratio, marker='o')
+plt.xlabel('Component Number')
+plt.ylabel('Explained Variance Ratio')
+plt.title('Scree Plot')
+plt.show()
+
+# It appears that the number of components should be around 5
+print("We set the number of components to be 5.")
+pca.n_components = 5
+
+# Fitting the data and transforming it to reduced dimension (again)
+X_reduced = pca.fit_transform(X_train)
+print("\nFitted data to pca with 5 components!\n")
+
+
+# Reconstructing the data after an inverse transformation
+X_reconstructed = pca.inverse_transform(X_reduced)
+# Calculating reconstruction error rate
+# Which compares reconstructed data from reduced dimensions to original data
+reconstruction_error = np.mean(np.square(X_train - X_reconstructed))
+print("\nReconstructed the data by doing inverse of transformation.")
+print("Reconstruction Error:", reconstruction_error)
+
+print("\nTo get a reconstruction error rate below .5, we need at least 5 components.")
+print("Getting 6 components significantly reduces the reconstruction error rate.")
+
+
+```
+
+## Therefore, we don't use dimensionality reduction with PCA to reduce the number of predictors.
+
+```{python}
+s_df.to_csv("../Data/SeverityData/severity.csv", index=False, header=True)
+```
