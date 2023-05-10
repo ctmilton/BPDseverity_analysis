@@ -1,5 +1,5 @@
 ---
-title: "Title To Be Determined"
+title: "Analysis of BPD Diagnosis, Symptoms, and Severity Levels"
 format: pdf
 editor: visual
 execute: 
@@ -12,7 +12,7 @@ bibliography: references.bib
 
 Carol Milton, ctmilton@smith.edu
 
-Affilation: Smith College
+Smith College
 
 
 ```{python}
@@ -30,9 +30,9 @@ Affilation: Smith College
 #       \renewcommand\Affilfont{\small}
 ```
 
-Keywords: Borderline Personality Disorder, symptoms, severity
+*Keywords: Borderline Personality Disorder, symptoms, severity*
 
-***Abstract* — This paper is an analysis to see if factors such as depression, anxiety, and paranoia can predict the diagnosis of Borderline Personality Disorder (BPD). A logistic regression using components created by these factors was fitted on a sample of BPD patients and health control cases. A Spearman Rank correlation test shows high correlations among the factors and the resulting the logistic regression model performs fairly well. This paper also delves into the prediction of BPD severity levels using symptom groups and predicting the measurement scores of each symptom group using the other symptom groups as predictors. The random forest classifier model has a high accuracy for predicting the BPD severity levels Low, Medium, and High. The random forest regression models perform well with the models for predicting impulsivity and parasuicidal behavior doing the best the model for predicting emptiness doing the worst.**
+***Abstract* — This paper is an analysis to see if factors such as depression, anxiety, and paranoia can predict the diagnosis of Borderline Personality Disorder (BPD). A logistic regression using components created by these factors was fitted on a sample of BPD patients and health control cases. A Spearman Rank correlation test shows high correlations among the factors and the resulting the logistic regression model performs well. This paper also delves into the prediction of BPD severity levels using symptom groups and predicting the measurement scores of each symptom group using the other symptom groups as predictors. The random forest classifier model has a high accuracy for predicting the BPD severity levels Low, Medium, and High. The random forest regression models perform well with the models for predicting impulsivity and parasuicidal behavior doing the best and the model for predicting emptiness doing the worst.**
 
 # 1. Introduction
 Borderline Personality Disorder (BPD) is a type of personality disorder characterized by marked impulsivity, mood instability, complications in interpersonal relationships, and suicidal behavior [@paris_borderline_2005]. It is a serious mental health disorder that negatively impacts occupational and social functioning, while being associated with substance use, high rate of suicide, high rate of suicide attempts, and high health care utilization and costs [@zimmerman_improving_2016]. In a study comparing psychosocial functioning in patients with bipolar disorder and BPD, the depressed patients with BPD had lower rates of graduating from college, were diagnosed with more comorbid disorders, and more frequently had a history of substance use disorders. The depressed patients with BPD also reported more suicidal ideation, higher frequency of suicide attempts, poorer social functioning, and were rated lower on the Global Assessment of Functioning [@zimmerman_distinguishing_2013].
@@ -118,7 +118,9 @@ When creating logistic regression models for the other variables, only the paran
 The aim was to create a logistic regression with the 3 components, however the small sample size would make it difficult to evaluate when using only one training and testing dataset. Then the k-folds cross validation method was implemented using two scoring metrics ('accuracy' and 'recall') to better test the model. The overall accuracy score was 86%, which showed was decent, however, a higher accuracy would have been better to avoid misdiagnosing patients. The recall score was 90%, which was the proportion of correctly predicted positive instances out of all actual positive instances and measured the model's ability to identify positive cases and minimizes false negatives. This percentage was also good. A Brier score was calculated to measure the mean squared difference between the predicted probabilities and the actual binary outcomes. The Brier score was 0.14, showing that the model's predicted outcomes were fairly close to the real outcomes.
 
 ## Severity Analysis
-A random forest classifier was fitted on the data where `BPDSIsumCat`, the categorical variable for the BPD severity was the response variable, and the predictors were the symptom groups: `abandonment`, `interpersonal relationships`, `identity`, `impulsivity`, `parasuicidal behavior`, `affective instability`, `emptiness`, `outbursts of anger`, and `dissociation and paranoid ideation`. The data was split into training and testing datasets and 100 trees were created. This model had a 94.3% accuracy, which was fairly high and thus made this model a good predictor for the severity level of BPD.
+A random forest classifier was fitted on the data where `BPDSIsumCat`, the categorical variable for the BPD severity was the response variable, and the predictors were the symptom groups: `abandonment`, `interpersonal relationships`, `identity`, `impulsivity`, `parasuicidal behavior`, `affective instability`, `emptiness`, `outbursts of anger`, and `dissociation and paranoid ideation`. The data was split into training and testing datasets and 100 trees were created. The figure below shows the first decision tree in the random forest classifier. This model had a 94.3% accuracy, which was fairly high and thus made this model a good predictor for the severity level of BPD.
+
+![First Decision Tree Plot](./Figures/SeverityFigures/DecisionTree.png)
 
 After doing 9 random forest regression models, one for each symptom group, the mean-squared error (MSE) was used to evaluate which models were more useful. All models except for the model using `emptiness` as the response variable had a MSE less than 3.0. The `emptiness` model had an MSE of 4.7. The models with an MSE less than 1 had the corresponding response variables `impulsivity` and `parasuicidal behavior` with the latter model having the smallest MSE (about 0.50).
 

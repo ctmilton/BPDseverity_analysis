@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Title To Be Determined</title>
+<title>Analysis of BPD Diagnosis, Symptoms, and Severity Levels</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Title To Be Determined</h1>
+<h1 class="title">Analysis of BPD Diagnosis, Symptoms, and Severity Levels</h1>
 </div>
 
 
@@ -80,9 +80,9 @@ div.csl-indent {
 </header>
 
 <p>Carol Milton, ctmilton@smith.edu</p>
-<p>Affilation: Smith College</p>
-<p>Keywords: Borderline Personality Disorder, symptoms, severity</p>
-<p><strong><em>Abstract</em> — This paper is an analysis to see if factors such as depression, anxiety, and paranoia can predict the diagnosis of Borderline Personality Disorder (BPD). A logistic regression using components created by these factors was fitted on a sample of BPD patients and health control cases. A Spearman Rank correlation test shows high correlations among the factors and the resulting the logistic regression model performs fairly well. This paper also delves into the prediction of BPD severity levels using symptom groups and predicting the measurement scores of each symptom group using the other symptom groups as predictors. The random forest classifier model has a high accuracy for predicting the BPD severity levels Low, Medium, and High. The random forest regression models perform well with the models for predicting impulsivity and parasuicidal behavior doing the best the model for predicting emptiness doing the worst.</strong></p>
+<p>Smith College</p>
+<p><em>Keywords: Borderline Personality Disorder, symptoms, severity</em></p>
+<p><strong><em>Abstract</em> — This paper is an analysis to see if factors such as depression, anxiety, and paranoia can predict the diagnosis of Borderline Personality Disorder (BPD). A logistic regression using components created by these factors was fitted on a sample of BPD patients and health control cases. A Spearman Rank correlation test shows high correlations among the factors and the resulting the logistic regression model performs well. This paper also delves into the prediction of BPD severity levels using symptom groups and predicting the measurement scores of each symptom group using the other symptom groups as predictors. The random forest classifier model has a high accuracy for predicting the BPD severity levels Low, Medium, and High. The random forest regression models perform well with the models for predicting impulsivity and parasuicidal behavior doing the best and the model for predicting emptiness doing the worst.</strong></p>
 <section id="introduction" class="level1">
 <h1>1. Introduction</h1>
 <p>Borderline Personality Disorder (BPD) is a type of personality disorder characterized by marked impulsivity, mood instability, complications in interpersonal relationships, and suicidal behavior <span class="citation" data-cites="paris_borderline_2005">(<a href="#ref-paris_borderline_2005" role="doc-biblioref">Paris 2005</a>)</span>. It is a serious mental health disorder that negatively impacts occupational and social functioning, while being associated with substance use, high rate of suicide, high rate of suicide attempts, and high health care utilization and costs <span class="citation" data-cites="zimmerman_improving_2016">(<a href="#ref-zimmerman_improving_2016" role="doc-biblioref">Zimmerman 2016</a>)</span>. In a study comparing psychosocial functioning in patients with bipolar disorder and BPD, the depressed patients with BPD had lower rates of graduating from college, were diagnosed with more comorbid disorders, and more frequently had a history of substance use disorders. The depressed patients with BPD also reported more suicidal ideation, higher frequency of suicide attempts, poorer social functioning, and were rated lower on the Global Assessment of Functioning <span class="citation" data-cites="zimmerman_distinguishing_2013">(<a href="#ref-zimmerman_distinguishing_2013" role="doc-biblioref">Zimmerman et al. 2013</a>)</span>.</p>
@@ -157,7 +157,13 @@ div.csl-indent {
 </section>
 <section id="severity-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="severity-analysis">Severity Analysis</h2>
-<p>A random forest classifier was fitted on the data where <code>BPDSIsumCat</code>, the categorical variable for the BPD severity was the response variable, and the predictors were the symptom groups: <code>abandonment</code>, <code>interpersonal relationships</code>, <code>identity</code>, <code>impulsivity</code>, <code>parasuicidal behavior</code>, <code>affective instability</code>, <code>emptiness</code>, <code>outbursts of anger</code>, and <code>dissociation and paranoid ideation</code>. The data was split into training and testing datasets and 100 trees were created. This model had a 94.3% accuracy, which was fairly high and thus made this model a good predictor for the severity level of BPD.</p>
+<p>A random forest classifier was fitted on the data where <code>BPDSIsumCat</code>, the categorical variable for the BPD severity was the response variable, and the predictors were the symptom groups: <code>abandonment</code>, <code>interpersonal relationships</code>, <code>identity</code>, <code>impulsivity</code>, <code>parasuicidal behavior</code>, <code>affective instability</code>, <code>emptiness</code>, <code>outbursts of anger</code>, and <code>dissociation and paranoid ideation</code>. The data was split into training and testing datasets and 100 trees were created. The figure below shows the first decision tree in the random forest classifier. This model had a 94.3% accuracy, which was fairly high and thus made this model a good predictor for the severity level of BPD.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./Figures/SeverityFigures/DecisionTree.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">First Decision Tree Plot</figcaption><p></p>
+</figure>
+</div>
 <p>After doing 9 random forest regression models, one for each symptom group, the mean-squared error (MSE) was used to evaluate which models were more useful. All models except for the model using <code>emptiness</code> as the response variable had a MSE less than 3.0. The <code>emptiness</code> model had an MSE of 4.7. The models with an MSE less than 1 had the corresponding response variables <code>impulsivity</code> and <code>parasuicidal behavior</code> with the latter model having the smallest MSE (about 0.50).</p>
 </section>
 </section>

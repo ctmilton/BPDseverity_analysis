@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.tree import plot_tree
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.metrics import mean_squared_error
@@ -259,3 +260,16 @@ y_predict = rf_regressor.predict(X_test)
 # Evaluating the mean squared error of the model
 mse = mean_squared_error(y_test, y_predict)
 print("Mean Squared Error:", mse)
+
+
+target_name = s_df.BPDSIsumCat.values
+
+# Creating figure of the first decisions tree in random forest classifier
+plt.close()
+fig = plt.figure(figsize=(15, 10))
+plot_tree(rf.estimators_[0],
+          feature_names=X_train.dtype.names,
+          class_names=target_name,
+          filled=True, impurity=True,
+          rounded=True)
+plt.show()
